@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.skalpha.tiertagger.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "MixinEntityRenderer",
+    "MixinPlayer",
+    "MixinPlayerTabOverlay",
+    "MixinTextDisplayRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

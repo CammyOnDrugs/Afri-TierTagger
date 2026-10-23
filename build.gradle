@@ -1,0 +1,34 @@
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version '1.14.10'
+}
+
+version = project.mod_version
+group = 'com.skalpha.tiertagger'
+base { archivesName = 'Afri-TiersTagger' }
+
+repositories { maven { url = 'https://maven.uku3lig.net/releases' } }
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    modImplementation "net.uku3lig:ukulib:${project.ukulib_version}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+test { useJUnitPlatform() }
+jar { from('LICENSE', 'NOTICE') }
