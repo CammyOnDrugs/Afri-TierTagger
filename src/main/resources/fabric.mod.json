@@ -8,7 +8,9 @@
     "Brianni_MC (Afri-Tiers)"
   ],
   "contact": {
-    "sources": "https://github.com/CammyOnDrugs/Afri-TierTagger"
+    "sources": "https://github.com/CammyOnDrugs/Afri-TierTagger",
+    "homepage": "https://afritiers.co.za",
+    "issues": "https://github.com/CammyOnDrugs/Afri-TierTagger/issues"
   },
   "license": "MPL-2.0",
   "icon": "assets/tier-tagger/icon.png",

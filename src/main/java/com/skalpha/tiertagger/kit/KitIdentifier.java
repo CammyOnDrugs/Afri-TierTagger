@@ -24,7 +24,7 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.ItemTags;
 
-/** Reads only information already synchronized to the local Minecraft client. Main-client-thread use only. */
+                                                                                                              
 public final class KitIdentifier {
     private static final EquipmentSlot[] OBSERVED_SLOTS = {
         EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
@@ -50,7 +50,7 @@ public final class KitIdentifier {
         MinecraftClient client = MinecraftClient.getInstance();
         if (name == null || !prepare(client)) return Optional.empty();
         if (NAMES.isEmpty()) {
-            // Raw GameProfile names avoid recursing through the mod's name-tag mixins.
+                                                                                       
             for (PlayerEntity player : client.world.getPlayers()) {
                 NAMES.put(player.getGameProfile().name().toLowerCase(Locale.ROOT), player.getUuid());
             }
@@ -58,7 +58,7 @@ public final class KitIdentifier {
         return inferredMode(NAMES.get(name.toLowerCase(Locale.ROOT)));
     }
 
-    /** Call on disconnect; world/tick transitions are also detected lazily. */
+                                                                               
     public static void clear() {
         CACHE.clear();
         NAMES.clear();
@@ -85,7 +85,7 @@ public final class KitIdentifier {
     private static KitSnapshot snapshot(PlayerEntity player, boolean complete) {
         KitSnapshot.Builder b = KitSnapshot.builder(complete);
         if (complete) {
-            // Main stacks contain the selected hand already. Add only armor/offhand below.
+                                                                                           
             for (ItemStack stack : player.getInventory().getMainStacks()) addStack(b, stack);
         }
         for (EquipmentSlot slot : OBSERVED_SLOTS) {

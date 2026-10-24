@@ -65,7 +65,25 @@ public record PlayerInfo(
       if (array == null) throw new JsonParseException("Missing public players array");
       List<PlayerInfo> players = new ArrayList<>(array.size());
       for (JsonElement element : array) players.add(parsePlayer(element.getAsJsonObject()));
+      assignPositions(players);
       return players;
+   }
+
+   static void assignPositions(List<PlayerInfo> players) {
+      var names = java.text.Collator.getInstance(Locale.ENGLISH);
+      for (String mode : players.stream().flatMap(player -> player.rankings().keySet().stream()).distinct().toList()) {
+         List<PlayerInfo> ranked = players.stream().filter(player -> {
+            Ranking ranking = player.rankings().get(mode);
+            return ranking != null && !ranking.retired() && tierRankValue(ranking.tierName()) < 999;
+         }).sorted(Comparator.<PlayerInfo>comparingInt(player -> tierRankValue(player.rankings().get(mode).tierName()))
+            .thenComparing(Comparator.<PlayerInfo>comparingInt(player -> player.rankings().get(mode).points()).reversed())
+            .thenComparing(PlayerInfo::name, names)).toList();
+         for (int index = 0; index < ranked.size(); index++) {
+            Map<String, Ranking> rankings = ranked.get(index).rankings();
+            Ranking previous = rankings.get(mode);
+            rankings.put(mode, new Ranking(previous.tierName(), previous.tier(), previous.retired(), previous.points(), index + 1));
+         }
+      }
    }
 
    private static PlayerInfo parsePlayer(JsonObject obj) {
@@ -83,7 +101,7 @@ public record PlayerInfo(
             boolean retired = getBoolean(tierObj, "retired", false);
             if (mode != null && !mode.isBlank() && !"debuff".equalsIgnoreCase(mode)) {
                GameMode canonical = GameMode.byId(mode);
-               rankings.put(canonical.id(), new PlayerInfo.Ranking(level, level, retired, 0));
+               rankings.put(canonical.id(), new PlayerInfo.Ranking(level, level, retired, getInt(tierObj, "points", 0)));
             }
          }
       }
@@ -225,7 +243,8 @@ public record PlayerInfo(
       }
    }
 
-   public record Ranking(String tierName, String tier, boolean retired, int points) {
+   public record Ranking(String tierName, String tier, boolean retired, int points, int position) {
+      public Ranking(String tierName, String tier, boolean retired, int points) { this(tierName, tier, retired, points, 0); }
       public PlayerInfo.NamedRanking asNamed(@Nullable GameMode mode) {
          return new PlayerInfo.NamedRanking(mode, this);
       }

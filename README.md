@@ -14,7 +14,11 @@ Open the existing Afri-TiersTagger settings through Ukulib/Mod Menu or the confi
 
 While in a world, the mod checks the public queue status every five seconds. A newly opened queue displays the red title and white subtitle, with repeated noteblock sounds for three seconds. Initial loading, duplicate responses, a second tester joining and bot restarts do not repeat old alerts. Simultaneous openings are displayed in sequence.
 
-`/join-queue <gamemode>` opens that mode's public Discord waitlist channel. Click its **Join Queue** button there; Discord verifies your account and eligibility. This client does not bypass Discord authentication or submit unauthenticated queue changes.
+`/join-queue <gamemode>` joins through AfriTiersLink 1.1.0 on LA-Network or SurgeMC. The server identifies the actual online Minecraft player, and the bot resolves the existing verified Discord link before applying the normal restrictions, cooldown and queue checks. No Discord sign-in is required. Unlinked players are directed to `/lobby` and `/afritiers-link`. Other servers need the supported plugin before they can forward queue requests.
+
+The **Alerts** tab separately controls waitlist and testing-ticket notifications, Chat or Title placement, and sounds. Ticket notifications play one note. Waitlist alerts retain the original three-second sound sequence when enabled.
+
+Per-mode placements appear before tiers, with trophies for the top three active players. Tier colour inputs show a live colour swatch. Website and issue links appear in mod metadata.
 
 The staff command `/afritiertester` and all staff API functionality have been removed. `/afritiersreload` and `/tiertagger` remain available.
 
@@ -36,6 +40,6 @@ On Windows use `gradlew.bat build`. The remapped mod and source JARs are written
 
 ## Public source boundaries
 
-This repository contains client source, build files, tests and public artwork only. No bot source, Discord bot token, API key, database, player/account export, private backend address or workstation configuration is required to build or use it. The client uses public HTTPS GET endpoints only. Publishing this code does not grant access to private service operations.
+This repository contains client source, build files, tests and public artwork only. No bot source, Discord bot token, API key, database, player/account export, private backend address or workstation configuration is required to build or use it. The client uses public HTTPS GET endpoints and sends its queue command to the current Minecraft server. It contains no private queue API credentials. Publishing this code does not grant access to private service operations.
 
 Derived from Tier Tagger; original copyright and MPL-2.0 terms are preserved in [LICENSE](LICENSE) and [NOTICE](NOTICE).

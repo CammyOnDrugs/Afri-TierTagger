@@ -14,11 +14,16 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import com.google.gson.JsonParser;
+import com.skalpha.tiertagger.config.TierTaggerConfig;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -30,14 +35,23 @@ public final class QueueAlerts {
     private static final ArrayDeque<QueueFeed.Entry> pending = new ArrayDeque<>();
     private static QueueTracker tracker = new QueueTracker();
     private static Object world;
+    private static Object connection;
+    private static boolean helloSent;
+    private static final Set<String> seenTickets = new HashSet<>();
+    private static final ArrayDeque<Ticket> tickets = new ArrayDeque<>();
+    private record Ticket(String event, String username, String mode) {}
     private static int session;
     private static boolean inFlight;
     private static long nextPoll;
     private static int soundTicks;
+    private static int displayTicks;
 
     private QueueAlerts() {}
 
     public static void init() {
+        PayloadTypeRegistry.playS2C().register(QueuePayload.ID, QueuePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(QueuePayload.Hello.ID, QueuePayload.Hello.CODEC);
+        ClientPlayNetworking.registerGlobalReceiver(QueuePayload.ID, (payload, context) -> acceptTickets(payload.json()));
         ClientTickEvents.END_CLIENT_TICK.register(QueueAlerts::tick);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> dispatcher.register(
             ClientCommandManager.literal("join-queue")
@@ -57,22 +71,24 @@ public final class QueueAlerts {
                             case "spearmace" -> "spear";
                             default -> requested;
                         };
-                        QueueFeed.Entry entry = queues.get(mode);
-                        if (entry == null || !entry.open()) {
-                            context.getSource().sendError(Text.literal("That queue is closed or its status is unavailable."));
+                        if (!QueueFeed.MODES.contains(mode)) {
+                            context.getSource().sendError(Text.literal("Unknown gamemode."));
                             return 0;
                         }
-                        // Joining remains authenticated by Discord's existing queue button.
-                        context.getSource().sendFeedback(Text.literal("Use Join Queue in the Discord waitlist channel."));
                         MinecraftClient client = context.getSource().getClient();
-                        ConfirmLinkScreen.open(client.currentScreen, entry.joinUrl().toString(), true);
+                        if (client.getNetworkHandler() == null || !ClientPlayNetworking.canSend(QueuePayload.Hello.ID)) {
+                            context.getSource().sendError(Text.literal("Use /join-queue on LA-Network or SurgeMC with the updated AfriTiersLink plugin."));
+                            return 0;
+                        }
+                        client.getNetworkHandler().sendChatCommand("afritierslink:join-queue " + mode);
                         return 1;
                     }))));
     }
 
     private static void tick(MinecraftClient client) {
-        if (client.world != world) {
-            world = client.world;
+        if (client.world != world) { world = client.world; KitIdentifier.clear(); helloSent = false; }
+        if (client.getNetworkHandler() != connection) {
+            connection = client.getNetworkHandler();
             session++;
             inFlight = false;
             nextPoll = 0;
@@ -80,16 +96,44 @@ public final class QueueAlerts {
             queues.clear();
             pending.clear();
             soundTicks = 0;
-            KitIdentifier.clear();
+            displayTicks = 0;
+            seenTickets.clear(); tickets.clear(); helloSent = false;
         }
         if (client.world == null || client.player == null) return;
-        if (soundTicks == 0 && !pending.isEmpty()) {
+        if (!helloSent && ClientPlayNetworking.canSend(QueuePayload.Hello.ID)) {
+            ClientPlayNetworking.send(new QueuePayload.Hello("2.6.0")); helloSent = true;
+        }
+        TierTaggerConfig config = TierTagger.getManager().getConfig();
+        if (!config.isWaitlistAlerts()) { pending.clear(); soundTicks = 0; }
+        if (!config.isWaitlistSound()) soundTicks = 0;
+        if (!config.isTicketAlerts()) tickets.clear();
+        if (displayTicks > 0) displayTicks--;
+        if (displayTicks == 0 && !tickets.isEmpty()) {
+            Ticket ticket = tickets.removeFirst();
+            String mode = ticket.mode().equals("spear") ? "Spearmace" : ticket.mode().toUpperCase(Locale.ROOT);
+            if (config.getTicketLocation() == TierTaggerConfig.AlertLocation.CHAT)
+                client.inGameHud.getChatHud().addMessage(Text.literal(ticket.username() + " Your Testing Ticket for " + mode + " is open").formatted(Formatting.GREEN));
+            else {
+                client.inGameHud.setTitleTicks(0, 60, 0);
+                client.inGameHud.setSubtitle(Text.literal("Your Testing Ticket for " + mode + " is open").formatted(Formatting.WHITE));
+                client.inGameHud.setTitle(Text.literal(ticket.username()).formatted(Formatting.GREEN));
+                displayTicks = 60;
+            }
+            soundTicks = 0;
+            if (config.isTicketSound()) client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), 1.0F));
+        } else if (displayTicks == 0 && !pending.isEmpty()) {
             QueueFeed.Entry entry = pending.removeFirst();
             String mode = smallCaps(entry.mode().equals("spear") ? "spearmace" : entry.mode());
-            client.inGameHud.setTitleTicks(0, 60, 0);
-            client.inGameHud.setSubtitle(Text.literal("ᴅᴏ /ᴊᴏɪɴ-ǫᴜᴇᴜᴇ " + mode + " ᴛᴏ ᴊᴏɪɴ ᴛʜᴇ ᴡᴀɪᴛʟɪѕᴛ!").formatted(Formatting.WHITE));
-            client.inGameHud.setTitle(Text.literal(mode + " ǫᴜᴇᴜᴇ ʜᴀѕ ᴊᴜѕᴛ ᴏᴘᴇɴᴇᴅ!").formatted(Formatting.RED));
-            soundTicks = 60;
+            Text subtitle = Text.literal("ᴅᴏ /ᴊᴏɪɴ-ǫᴜᴇᴜᴇ " + mode + " ᴛᴏ ᴊᴏɪɴ ᴛʜᴇ ᴡᴀɪᴛʟɪѕᴛ!").formatted(Formatting.WHITE);
+            Text title = Text.literal(mode + " ǫᴜᴇᴜᴇ ʜᴀѕ ᴊᴜѕᴛ ᴏᴘᴇɴᴇᴅ!").formatted(Formatting.RED);
+            if (config.getWaitlistLocation() == TierTaggerConfig.AlertLocation.CHAT)
+                client.inGameHud.getChatHud().addMessage(title.copy().append(" ").append(subtitle));
+            else {
+                client.inGameHud.setTitleTicks(0, 60, 0);
+                client.inGameHud.setSubtitle(subtitle); client.inGameHud.setTitle(title);
+            }
+            displayTicks = 60;
+            soundTicks = config.isWaitlistSound() ? 60 : 0;
         }
         if (soundTicks > 0) {
             if (soundTicks % 2 == 0)
@@ -102,7 +146,7 @@ public final class QueueAlerts {
             nextPoll = now + Duration.ofSeconds(5).toNanos();
             int requestSession = session;
             HttpRequest request = HttpRequest.newBuilder(ENDPOINT).timeout(Duration.ofSeconds(10))
-                .header("Accept", "application/json").header("User-Agent", "Afri-TiersTagger/2.5.0").GET().build();
+                .header("Accept", "application/json").header("User-Agent", "Afri-TiersTagger/2.6.0").GET().build();
             TierTagger.getClient().sendAsync(request, com.skalpha.tiertagger.net.PublicHttp.limitedUtf8(65_536))
                 .thenApply(response -> {
                     if (response.statusCode() != 200) throw new IllegalArgumentException("Queue status unavailable");
@@ -114,10 +158,31 @@ public final class QueueAlerts {
                     queues.clear();
                     feed.queues().forEach(entry -> queues.put(entry.mode(), entry));
                     for (QueueFeed.Entry entry : tracker.accept(feed, Instant.now())) {
-                        if (pending.size() < QueueFeed.MODES.size()) pending.addLast(entry);
+                        if (TierTagger.getManager().getConfig().isWaitlistAlerts() && pending.size() < QueueFeed.MODES.size()) pending.addLast(entry);
                     }
                 }));
         }
+    }
+
+    private static void acceptTickets(String json) {
+        try {
+            var root = JsonParser.parseString(json).getAsJsonObject();
+            if (!"tickets".equals(root.get("type").getAsString())) return;
+            var rows = root.getAsJsonArray("tickets");
+            if (rows.size() > QueueFeed.MODES.size()) return;
+            var parsed = new java.util.ArrayList<Ticket>();
+            for (var element : rows) {
+                var row = element.getAsJsonObject();
+                String event = row.get("eventId").getAsString();
+                String mode = row.get("mode").getAsString();
+                String username = row.get("username").getAsString();
+                if (!event.matches("[a-f0-9]{64}") || !QueueFeed.MODES.contains(mode) || !username.matches("[A-Za-z0-9_]{1,16}")) return;
+                parsed.add(new Ticket(event, username, mode));
+            }
+            for (Ticket ticket : parsed) {
+                if (seenTickets.add(ticket.event()) && TierTagger.getManager().getConfig().isTicketAlerts() && tickets.size() < 16) tickets.addLast(ticket);
+            }
+        } catch (RuntimeException ignored) {}
     }
 
     static String smallCaps(String value) {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** Pure display heuristics. This code never grants permissions or transmits inventory data. */
+                                                                                               
 public final class KitRules {
     static final String BED = "#bed";
     static final String SHULKER = "#shulker";
@@ -18,7 +18,7 @@ public final class KitRules {
 
     private KitRules() {}
 
-    /** Returns canonical public API mode IDs. Ambiguous specific signatures deliberately fall back. */
+                                                                                                       
     public static Optional<String> infer(KitSnapshot s) {
         List<String> matches = new ArrayList<>();
         boolean diamond = s.armor("diamond");
@@ -55,7 +55,7 @@ public final class KitRules {
 
         if (matches.size() > 1) return Optional.empty();
         if (matches.size() == 1) return Optional.of(matches.getFirst());
-        // Sword is the broadest signature, so every fully established specific kit takes precedence.
+                                                                                                     
         return diamond && s.has("diamond_sword") ? Optional.of("sword") : Optional.empty();
     }
 }

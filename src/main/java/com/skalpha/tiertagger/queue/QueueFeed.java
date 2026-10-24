@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** Public display data only. This client has no bot credentials or write API. */
+                                                                                 
 public record QueueFeed(Instant generatedAt, List<Entry> queues) {
     public static final Set<String> MODES = Set.of("sword", "vanilla", "axe", "diapot", "nethpot",
             "uhc", "smp", "mace", "ogv", "speed", "diasmp", "creeper", "cart", "spear", "bed", "diavanilla");

@@ -3,7 +3,7 @@ package com.skalpha.tiertagger.kit;
 import java.util.HashMap;
 import java.util.Map;
 
-/** An ephemeral, client-observed snapshot. Missing remote items are unknown, not absent. */
+                                                                                            
 public record KitSnapshot(boolean completeInventory, Map<String, Integer> items, Map<Slot, String> worn) {
     public enum Slot { HEAD, CHEST, LEGS, FEET }
 

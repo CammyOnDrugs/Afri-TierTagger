@@ -31,7 +31,7 @@ public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
    }
 
    protected Tab[] getTabs(TierTaggerConfig var1) {
-      return new Tab[]{new TTConfigScreen.MainSettingsTab(), new TTConfigScreen.ColorsTab()};
+      return new Tab[]{new TTConfigScreen.MainSettingsTab(), new TTConfigScreen.ColorsTab(), new TTConfigScreen.AlertsTab()};
    }
 
    public void refresh(int var1) {
@@ -62,10 +62,10 @@ public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
 
       protected WidgetCreator[] getWidgets(TierTaggerConfig var1) {
          ArrayList<WidgetCreator> var2 = new ArrayList();
-         var2.add(new InputOption("tiertagger.colors.retired", var1.getRetiredColorHex(), var1x -> {
+         var2.add(new ColorInputOption("tiertagger.colors.retired", var1.getRetiredColorHex(), var1x -> {
             var1.setRetiredColorHex(var1x);
             TierTagger.invalidateTierComponentCache();
-         }, TierTagger::isValidColor, 8));
+         }));
 
          for (Entry var3 : var1.getTierColorsHex()
             .entrySet()
@@ -77,13 +77,27 @@ public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
             )
             .toList()) {
             String var5 = (String)var3.getKey();
-            var2.add(new InputOption("tiertagger.colors." + var5, (String)var3.getValue(), var2x -> {
+            var2.add(new ColorInputOption("tiertagger.colors." + var5, (String)var3.getValue(), var2x -> {
                var1.setTierColorHex(var5, var2x);
                TierTagger.invalidateTierComponentCache();
-            }, TierTagger::isValidColor, 8));
+            }));
          }
 
          return var2.toArray(WidgetCreator[]::new);
+      }
+   }
+
+   public class AlertsTab extends ButtonTab<TierTaggerConfig> {
+      public AlertsTab() { super("tiertagger.alerts", TTConfigScreen.this.manager); }
+      protected WidgetCreator[] getWidgets(TierTaggerConfig config) {
+         return new WidgetCreator[]{
+            CyclingOption.ofBoolean("tiertagger.alerts.waitlist", config.isWaitlistAlerts(), config::setWaitlistAlerts),
+            CyclingOption.ofTranslatableEnum("tiertagger.alerts.waitlistLocation", TierTaggerConfig.AlertLocation.class, config.getWaitlistLocation(), config::setWaitlistLocation),
+            CyclingOption.ofBoolean("tiertagger.alerts.waitlistSound", config.isWaitlistSound(), config::setWaitlistSound),
+            CyclingOption.ofBoolean("tiertagger.alerts.ticket", config.isTicketAlerts(), config::setTicketAlerts),
+            CyclingOption.ofTranslatableEnum("tiertagger.alerts.ticketLocation", TierTaggerConfig.AlertLocation.class, config.getTicketLocation(), config::setTicketLocation),
+            CyclingOption.ofBoolean("tiertagger.alerts.ticketSound", config.isTicketSound(), config::setTicketSound)
+         };
       }
    }
 

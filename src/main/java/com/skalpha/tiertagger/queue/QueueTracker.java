@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-/** Session baseline and event deduplication, independent of rendering/networking. */
+                                                                                     
 public final class QueueTracker {
     private boolean initialized;
     private Instant latest = Instant.MIN;

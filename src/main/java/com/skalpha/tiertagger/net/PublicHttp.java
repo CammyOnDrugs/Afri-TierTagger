@@ -11,7 +11,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
 
-/** Bounded asynchronous public response bodies, with cancellation on timeout. */
+                                                                                 
 public final class PublicHttp {
     private PublicHttp() {}
 

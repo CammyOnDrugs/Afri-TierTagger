@@ -21,6 +21,33 @@ public class TierTaggerConfig implements Serializable {
    public int tierlistPage = 0;
    private LinkedTreeMap<String, Integer> tierColors = defaultColors();
    private boolean kitIdentifier = false;
+   private boolean waitlistAlerts = true;
+   private boolean waitlistSound = true;
+   private boolean ticketAlerts = true;
+   private boolean ticketSound = true;
+   private AlertLocation waitlistLocation = AlertLocation.TITLE;
+   private AlertLocation ticketLocation = AlertLocation.TITLE;
+
+   public boolean isWaitlistAlerts() { return waitlistAlerts; }
+   public void setWaitlistAlerts(boolean value) { waitlistAlerts = value; }
+   public boolean isWaitlistSound() { return waitlistSound; }
+   public void setWaitlistSound(boolean value) { waitlistSound = value; }
+   public boolean isTicketAlerts() { return ticketAlerts; }
+   public void setTicketAlerts(boolean value) { ticketAlerts = value; }
+   public boolean isTicketSound() { return ticketSound; }
+   public void setTicketSound(boolean value) { ticketSound = value; }
+   public AlertLocation getWaitlistLocation() { return waitlistLocation == null ? AlertLocation.TITLE : waitlistLocation; }
+   public void setWaitlistLocation(AlertLocation value) { waitlistLocation = value; }
+   public AlertLocation getTicketLocation() { return ticketLocation == null ? AlertLocation.TITLE : ticketLocation; }
+   public void setTicketLocation(AlertLocation value) { ticketLocation = value; }
+
+   public enum AlertLocation implements StringTranslatable {
+      CHAT("chat"), TITLE("title");
+      private final String value;
+      AlertLocation(String value) { this.value = value; }
+      public String getName() { return value; }
+      public String getTranslationKey() { return "tiertagger.alerts.location." + value; }
+   }
 
    public GameMode getGameMode() {
       List<GameMode> var1 = TierCache.getGamemodesOrDefault();

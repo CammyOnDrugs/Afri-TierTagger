@@ -159,10 +159,16 @@ public class TierTagger implements ModInitializer {
    }
 
    private static Text formatRanking(PlayerInfo.NamedRanking var0) {
-      Text var1 = getRankingText(var0.ranking(), false);
-      return ((TierTaggerConfig)manager.getConfig()).isShowIcons() && var0.mode() != null && var0.mode().icon().isPresent()
-         ? Text.literal(var0.mode().icon().get().toString()).append(var1)
-         : var1.copy();
+      MutableText result = rankingPosition(var0.ranking());
+      if (manager.getConfig().isShowIcons() && var0.mode() != null && var0.mode().icon().isPresent())
+         result.append(Text.literal(var0.mode().icon().get().toString()));
+      return result.append(tierText(var0.ranking(), false));
+   }
+
+   public static MutableText rankingPosition(PlayerInfo.Ranking ranking) {
+      if (ranking.position() <= 0 || ranking.retired()) return Text.empty();
+      String trophy = switch (ranking.position()) { case 1 -> "\uE901 "; case 2 -> "\uE902 "; case 3 -> "\uE903 "; default -> ""; };
+      return Text.literal(trophy + "#" + ranking.position() + " ").formatted(Formatting.WHITE);
    }
 
    public static void invalidateTierComponentCache() {
@@ -209,6 +215,10 @@ public class TierTagger implements ModInitializer {
    }
 
    public static Text getRankingText(PlayerInfo.Ranking var0, boolean var1) {
+      return rankingPosition(var0).append(tierText(var0, var1));
+   }
+
+   private static Text tierText(PlayerInfo.Ranking var0, boolean var1) {
       String var2 = var0.tierName() != null ? var0.tierName() : var0.tier();
       if (var0.retired()) {
          var2 = "R" + var2;
