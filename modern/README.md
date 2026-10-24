@@ -1,4 +1,4 @@
-# Afri-TiersTagger 2.7.0 for Minecraft 26.x
+# Afri-TiersTagger 2.7.1 for Minecraft 26.x
 
 Separate builds support **26.1, 26.1.1, 26.1.2, 26.2 and 26.3**. Use Java 25, Fabric Loader 0.19.5 or newer and Fabric API for your exact Minecraft release. Ukulib is not required by these builds.
 
