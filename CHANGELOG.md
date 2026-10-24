@@ -115,5 +115,9 @@ These support the mod but are changes to the backend or website:
 
 ## Validation and installation status
 
-Client 2.7.1 passed builds, tests and actual startup checks for all six Minecraft versions, including loading the new DiaVanilla texture. Velocity 1.0.1 passed 80 tests and startup/shutdown on an isolated Velocity 3.5.1 proxy. Purpur 1.0.0 passed 77 unit and mocked integration tests. All eight GitHub build jobs passed. The live queue feed returned HTTP 200 after its focused bot repair, and the authenticated Minecraft status endpoint accepted a signed read-only request while rejecting an unsigned request. Two focused regressions verified the actual bot start handler, persisted opening metadata and final API routing. A live Purpur startup, production plugin deployment and an actual linked-player queue join still need verification on the target server.
-
+- Client 2.7.1 passed builds, 76 tests per version and actual startup checks for all six Minecraft versions, including the new DiaVanilla texture.
+- Velocity 1.0.1 passed 80 tests and startup/shutdown on an isolated Velocity 3.5.1 proxy.
+- Purpur 1.1.0 passed 86 tests. The authorised Surge test server started it successfully, constructed all four native dialog pages and passed a signed backend status request over verified TLS. Both reload commands succeeded.
+- The existing server-hosted icon pack matches the supplied pack. The plugin now recognises its load status and avoids duplicate automatic offers.
+- The live public queue feed returned HTTP 200 after its focused bot repair, and unsigned Minecraft API requests remained rejected.
+- A real player's visual confirmation and an actual linked-player queue join are separate from these startup, configuration and backend checks.
