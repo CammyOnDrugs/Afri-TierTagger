@@ -57,8 +57,7 @@ public final class QueueAlerts {
             ClientCommandManager.literal("join-queue")
                 .then(ClientCommandManager.argument("gamemode", StringArgumentType.word())
                     .suggests((context, builder) -> {
-                        queues.values().stream().filter(QueueFeed.Entry::open)
-                            .map(QueueFeed.Entry::mode).sorted().forEach(builder::suggest);
+                        QueueFeed.openModes(queues.values(), builder.getRemaining()).forEach(builder::suggest);
                         return builder.buildFuture();
                     })
                     .executes(context -> {
@@ -101,7 +100,7 @@ public final class QueueAlerts {
         }
         if (client.world == null || client.player == null) return;
         if (!helloSent && ClientPlayNetworking.canSend(QueuePayload.Hello.ID)) {
-            ClientPlayNetworking.send(new QueuePayload.Hello("2.7.0")); helloSent = true;
+            ClientPlayNetworking.send(new QueuePayload.Hello("2.7.1")); helloSent = true;
         }
         TierTaggerConfig config = TierTagger.getManager().getConfig();
         if (!config.isWaitlistAlerts()) { pending.clear(); soundTicks = 0; }
@@ -146,7 +145,7 @@ public final class QueueAlerts {
             nextPoll = now + Duration.ofSeconds(5).toNanos();
             int requestSession = session;
             HttpRequest request = HttpRequest.newBuilder(ENDPOINT).timeout(Duration.ofSeconds(10))
-                .header("Accept", "application/json").header("User-Agent", "Afri-TiersTagger/2.7.0").GET().build();
+                .header("Accept", "application/json").header("User-Agent", "Afri-TiersTagger/2.7.1").GET().build();
             TierTagger.getClient().sendAsync(request, com.skalpha.tiertagger.net.PublicHttp.limitedUtf8(65_536))
                 .thenApply(response -> {
                     if (response.statusCode() != 200) throw new IllegalArgumentException("Queue status unavailable");

@@ -16,6 +16,12 @@ public record QueueFeed(Instant generatedAt, List<Entry> queues) {
 
     public record Entry(String mode, boolean open, String eventId, Instant openedAt, URI joinUrl) {}
 
+    public static List<String> openModes(java.util.Collection<Entry> entries, String prefix) {
+        String remaining = prefix.toLowerCase(java.util.Locale.ROOT);
+        return entries.stream().filter(Entry::open).map(Entry::mode).filter(MODES::contains)
+            .filter(mode -> mode.startsWith(remaining)).sorted().toList();
+    }
+
     public static QueueFeed parse(String json) {
         if (json.length() > 65_536) throw new IllegalArgumentException("Queue feed too large");
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();

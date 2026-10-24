@@ -11,8 +11,9 @@ Displays Afri-Tiers rankings beside player names, with the existing tier colours
 | 1.21.11 | Repository root | 21 | Fabric API for 1.21.11, Ukulib 1.10.2 |
 | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | [modern](modern/) | 25 | Fabric API for the exact Minecraft release |
 | Velocity 3.5.1 with Minecraft 1.21.11 | [velocity](velocity/) | 21 | PacketEvents Velocity 2.14.0 |
+| Purpur 1.21.11 | [purpur](purpur/) | 21 | PacketEvents Spigot/Paper 2.14.0 |
 
-Version **2.7.0** adds independent switches for overall rank numbers, rank trophy icons, and gold/silver/bronze podium colors. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
+Version **2.7.1** adds independent switches for overall rank numbers, rank trophy icons, and gold/silver/bronze podium colors. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
 
 Both the client and proxy settings open with **`/afritiers-settings`**. The client opens its settings screen, while the proxy offers a clickable chat menu for players without the mod. The Velocity plugin also provides tags, player lookup, kit identification and queue alerts; see its README for the icon resource pack and backend queue integration.
 
@@ -55,3 +56,7 @@ On Windows use `gradlew.bat build`. The remapped mod and source JARs are written
 This repository contains client source, build files, tests and public artwork only. No bot source, Discord bot token, API key, database, player/account export, private backend address or workstation configuration is required to build or use it. The client uses public HTTPS GET endpoints and sends its queue command to the current Minecraft server. It contains no private queue API credentials. Publishing this code does not grant access to private service operations.
 
 Derived from Tier Tagger; original copyright and MPL-2.0 terms are preserved in [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+## Latest additions
+
+`/join-queue ` completes only currently open queues. DiaVanilla uses its supplied dedicated icon. The [full changelog](CHANGELOG.md) records Afri-Tiers customization since the original mod. A [Purpur 1.21.11 plugin](purpur/) is also available with `/afritiers-settings`.

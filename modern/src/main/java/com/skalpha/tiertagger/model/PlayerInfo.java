@@ -39,7 +39,7 @@ public record PlayerInfo(
       String url = "https://afritiers.co.za/api/players";
       HttpRequest request = HttpRequest.newBuilder(URI.create(url))
          .timeout(java.time.Duration.ofSeconds(15))
-         .header("User-Agent", "Afri-TiersTagger/2.7.0")
+         .header("User-Agent", "Afri-TiersTagger/2.7.1")
          .header("Cache-Control", "no-cache, no-store, must-revalidate")
          .header("Pragma", "no-cache")
          .GET()

@@ -13,6 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class VelocityFeaturesTest {
+    @Test void diavanillaUsesDedicatedArtwork(){
+        Rankings rankings=new Rankings();rankings.update("{\"players\":[{\"name\":\"Example\",\"uuid\":\"00112233445566778899aabbccddeeff\",\"totalPoints\":1,\"tiers\":[{\"mode\":\"diavanilla\",\"level\":\"LT3\"}]}]}");
+        Preferences prefs=new Preferences();prefs.gameMode="diavanilla";assertTrue(rankings.tag(rankings.all().getFirst(),prefs,true,null).toString().contains("\uE814"));
+    }
     @TempDir Path directory;
     private static final UUID PLAYER=UUID.fromString("00112233-4455-6677-8899-aabbccddeeff");
     private String sample(){return """

@@ -1,0 +1,20 @@
+name: AfriTiersPurpur
+version: '1.0.0'
+main: net.afritiers.purpur.AfriTiersPurpur
+api-version: '1.21.11'
+depend: [packetevents]
+softdepend: [AfriTiersLink, AuthMe]
+commands:
+  afritiers-settings:
+    description: Your Afri-Tiers display and alert settings
+  afritiers:
+    description: Search a player's public tiers
+  afritiersreload:
+    description: Reload public rankings and configuration
+    permission: afritiers.reload
+  join-queue:
+    description: Join an open Afri-Tiers queue
+    usage: /join-queue <gamemode>
+permissions:
+  afritiers.reload:
+    default: op

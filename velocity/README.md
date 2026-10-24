@@ -1,8 +1,8 @@
-# Afri-Tiers Velocity 1.0.0
+# Afri-Tiers Velocity 1.0.1
 
 For **Velocity 3.5.1**, Java 21 and Minecraft **1.21.11** clients. Displays Afri-Tiers tags without requiring the client mod.
 
-Install `AfriTiersVelocity-1.0.0.jar` and [PacketEvents for Velocity 2.14.0](https://github.com/retrooper/packetevents/releases/tag/v2.14.0) in the proxy's `plugins` folder, then restart the proxy.
+Install `AfriTiersVelocity-1.0.1.jar` and [PacketEvents for Velocity 2.14.0](https://github.com/retrooper/packetevents/releases/tag/v2.14.0) in the proxy's `plugins` folder, then restart the proxy.
 
 Run **`/afritiers-settings`** in-game. Its clickable menu saves preferences for your UUID: enabled, nametags, tab list, gamemode, highest-tier fallback, retired tiers, gamemode icons, kit identification, tier colors, waitlist/ticket alerts, Chat/Title placement and sounds.
 
@@ -18,11 +18,11 @@ Client-mod users continue using their client display and alert settings, avoidin
 
 ## Icons
 
-The supplied `AfriTiers-Velocity-icons-mc1.21.11.zip` contains the original gamemode and trophy artwork. Host the ZIP at a direct HTTPS download URL and set `resourcePackUrl` and its SHA-1 in `plugins/afritiersvelocity/config.json`. Then restart the proxy or reload and reconnect. The pack is optional; until successfully loaded, labels use text and no custom trophy glyphs are sent. Gamemode icons and rank trophies can be disabled separately.
+The supplied `AfriTiers-server-icons-mc1.21.11.zip` contains the original gamemode and trophy artwork. Host the ZIP at a direct HTTPS download URL and set `resourcePackUrl` and its SHA-1 in `plugins/afritiersvelocity/config.json`. Then restart the proxy or reload and reconnect. The pack is optional; until successfully loaded, labels use text and no custom trophy glyphs are sent. Gamemode icons and rank trophies can be disabled separately.
 
 ```json
 {
-  "resourcePackUrl": "https://YOUR-PUBLIC-HOST/AfriTiers-Velocity-icons-mc1.21.11.zip",
+  "resourcePackUrl": "https://YOUR-PUBLIC-HOST/AfriTiers-server-icons-mc1.21.11.zip",
   "resourcePackSha1": "THE-SHA1-SUPPLIED-WITH-THE-ICON-PACK"
 }
 ```
@@ -36,3 +36,5 @@ With JDK 21 and Maven installed, run `mvn package`. The plugin JAR is written to
 The plugin was also started and stopped on an isolated Velocity 3.5.1 proxy with PacketEvents 2.14.0. Production installation and an actual authenticated queue join require access to the Minecraft servers.
 
 Public source uses MPL-2.0; see `LICENSE` and `NOTICE`. PacketEvents is distributed separately under GPL-3.0 and Velocity under GPL-3.0 with an MIT API.
+
+Press Tab after `/join-queue ` to list queues currently marked open. The feed refreshes every five seconds; the backend makes the final queue-open and eligibility checks. DiaVanilla now uses its supplied dedicated artwork.

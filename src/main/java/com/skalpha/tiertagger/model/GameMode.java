@@ -103,6 +103,7 @@ public record GameMode(String id, String title, int color) {
          case "ogv" -> Pair.of('\ue810', TextColor.fromFormatting(Formatting.GOLD));
          case "speed" -> Pair.of('\ue811', TextColor.fromRgb(4434385));
          case "spear" -> Pair.of('\ue813', TextColor.fromRgb(8388736));
+         case "diavanilla" -> Pair.of('\ue814', TextColor.fromFormatting(Formatting.WHITE));
          case "diapot" -> Pair.of('\ue704', TextColor.fromRgb(16711680));
          default -> null;
       };

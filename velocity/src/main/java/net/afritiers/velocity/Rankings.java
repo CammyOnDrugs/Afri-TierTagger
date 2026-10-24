@@ -35,7 +35,7 @@ public final class Rankings {
         return found.isPresent()?found:profiles.stream().filter(p->p.name().equalsIgnoreCase(name)).findFirst();
     }
     public static int positionColor(int position){return switch(position){case 1->0xFFD700;case 2->0xC0C0C0;case 3->0xCD7F32;default->0xAAAAAA;};}
-    private static String icon(String mode){return switch(mode){case "axe"->"\uE701";case "mace"->"\uE702";case "nethpot"->"\uE703";case "diapot"->"\uE704";case "smp"->"\uE705";case "sword"->"\uE706";case "uhc"->"\uE707";case "vanilla","diavanilla"->"\uE708";case "bed"->"\uE801";case "creeper"->"\uE803";case "diasmp"->"\uE806";case "cart"->"\uE809";case "ogv"->"\uE810";case "speed"->"\uE811";case "spear"->"\uE813";default->"";};}
+    private static String icon(String mode){return switch(mode){case "axe"->"\uE701";case "mace"->"\uE702";case "nethpot"->"\uE703";case "diapot"->"\uE704";case "smp"->"\uE705";case "sword"->"\uE706";case "uhc"->"\uE707";case "vanilla"->"\uE708";case "diavanilla"->"\uE814";case "bed"->"\uE801";case "creeper"->"\uE803";case "diasmp"->"\uE806";case "cart"->"\uE809";case "ogv"->"\uE810";case "speed"->"\uE811";case "spear"->"\uE813";default->"";};}
     public Component tag(Profile profile,Preferences settings,boolean resourcePack,String inferred){
         if(!settings.enabled)return Component.empty();
         List<Tier> tiers=profile.tiers().stream().filter(t->settings.showRetired||!t.retired()).sorted(Comparator.comparing(Tier::retired).thenComparingInt(Rankings::tierValue)).toList();

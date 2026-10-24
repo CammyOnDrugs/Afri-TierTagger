@@ -17,3 +17,7 @@ Build with JDK 25:
 Replace `26.3` with another supported release. The matching Fabric API version is selected automatically. On Windows use `gradlew.bat`. `version-source.gradle` applies the tested API differences to generated sources under `build/`; the maintained sources remain under `src/main/java`. Each output declares its exact Minecraft version.
 
 The 1.21.11 build is maintained at the repository root and uses Java 21 with Ukulib. See the root README, LICENSE and NOTICE.
+
+## Latest additions
+
+`/join-queue ` completes only currently open queues. DiaVanilla uses its supplied dedicated icon. The [full changelog](../CHANGELOG.md) records Afri-Tiers customization since the original mod. A [Purpur 1.21.11 plugin](../purpur/) is also available with `/afritiers-settings`.

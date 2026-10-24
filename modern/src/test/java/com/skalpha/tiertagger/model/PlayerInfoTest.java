@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerInfoTest {
+    @Test void diavanillaUsesItsOwnIcon() {
+        assertEquals(Character.valueOf('\ue814'),GameMode.byId("diavanilla").icon().orElseThrow());
+        assertNotEquals(GameMode.byId("vanilla").icon(),GameMode.byId("diavanilla").icon());
+    }
     @Test void currentPublicApiContractUsesCurrentTierAndCanonicalModes() {
         var players = PlayerInfo.parsePlayersJs("""
           {"players":[{"name":"Example","uuid":"00000000-0000-0000-0000-000000000001",

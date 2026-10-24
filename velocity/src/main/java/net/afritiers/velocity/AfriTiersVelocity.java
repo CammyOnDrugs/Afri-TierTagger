@@ -29,7 +29,7 @@ import net.kyori.adventure.title.Title;
 import org.slf4j.Logger;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
-@Plugin(id="afritiersvelocity",name="Afri-Tiers Velocity",version="1.0.0",description="Afri-Tiers tags, settings and queue alerts for Velocity 3.5.1",authors={"Brianni_MC"},dependencies={@Dependency(id="packetevents")})
+@Plugin(id="afritiersvelocity",name="Afri-Tiers Velocity",version="1.0.1",description="Afri-Tiers tags, settings and queue alerts for Velocity 3.5.1",authors={"Brianni_MC"},dependencies={@Dependency(id="packetevents")})
 public final class AfriTiersVelocity {
     static final MinecraftChannelIdentifier HELLO=MinecraftChannelIdentifier.create("afritiers","hello");
     static final MinecraftChannelIdentifier QUEUE=MinecraftChannelIdentifier.create("afritiers","queue");
@@ -70,7 +70,7 @@ public final class AfriTiersVelocity {
         });
         register("join-queue",new SimpleCommand(){
             public void execute(Invocation call){if(call.source() instanceof Player player)join(player,call.arguments());else call.source().sendMessage(Component.text("Run this command in-game.",RED));}
-            public List<String> suggest(Invocation call){String prefix=call.arguments().length==0?"":call.arguments()[0];return Rankings.MODES.stream().filter(m->!m.equals("overall")&&m.startsWith(prefix)).toList();}
+            public List<String> suggest(Invocation call){String prefix=call.arguments().length==0?"":call.arguments()[0];return openModes(prefix);}
         });
         register("afritiersreload",new SimpleCommand(){
             public void execute(Invocation call){if(!call.source().hasPermission("afritiers.reload")){call.source().sendMessage(Component.text("You do not have permission.",RED));return;}try{loadConfig();refreshRankings();call.source().sendMessage(Component.text("Afri-Tiers reloaded.",GREEN));}catch(Exception error){call.source().sendMessage(Component.text("Invalid config.json; check the proxy console.",RED));}}
@@ -96,7 +96,7 @@ public final class AfriTiersVelocity {
         }
         packUrl=url;packSha1=hash;
     }
-    private CompletableFuture<String> get(URI uri,int limit){return http.sendAsync(HttpRequest.newBuilder(uri).timeout(Duration.ofSeconds(15)).header("User-Agent","AfriTiersVelocity/1.0.0").GET().build(),PublicHttp.limitedUtf8(limit)).thenApply(response->{if(response.statusCode()!=200)throw new IllegalStateException("HTTP "+response.statusCode());return response.body();});}
+    private CompletableFuture<String> get(URI uri,int limit){return http.sendAsync(HttpRequest.newBuilder(uri).timeout(Duration.ofSeconds(15)).header("User-Agent","AfriTiersVelocity/1.0.1").GET().build(),PublicHttp.limitedUtf8(limit)).thenApply(response->{if(response.statusCode()!=200)throw new IllegalStateException("HTTP "+response.statusCode());return response.body();});}
     void refreshRankings(){if(!refreshing.compareAndSet(false,true))return;get(PLAYERS,8_000_000).thenAccept(rankings::update).whenComplete((result,error)->{refreshing.set(false);if(error!=null)logger.warn("Public rankings refresh failed; keeping the previous cache.");});}
     private void pollQueues(){
         if(!running||!polling.compareAndSet(false,true))return;
@@ -108,6 +108,7 @@ public final class AfriTiersVelocity {
             }
         }).whenComplete((result,error)->polling.set(false));
     }
+    List<String> openModes(String prefix){return QueueFeed.openModes(queues,prefix);}
     void join(Player player,String[] args){
         if(args.length!=1||!Rankings.MODES.contains(Rankings.mode(args[0]))||Rankings.mode(args[0]).equals("overall")){player.sendMessage(Component.text("Use /join-queue <gamemode>.",YELLOW));return;}
         if(player.getCurrentServer().isEmpty()){player.sendMessage(Component.text("Connect to a game server first.",RED));return;}
@@ -120,7 +121,7 @@ public final class AfriTiersVelocity {
         if(tags!=null)tags.reset(player.getUniqueId());
         proxy.getScheduler().buildTask(this,()->{
             if(!current(player,session))return;
-            player.getCurrentServer().filter(connection->connection.getServer().equals(event.getServer())).ifPresent(connection->connection.sendPluginMessage(HELLO,encode("velocity-1.0.0")));
+            player.getCurrentServer().filter(connection->connection.getServer().equals(event.getServer())).ifPresent(connection->connection.sendPluginMessage(HELLO,encode("velocity-1.0.1")));
             if(!packUrl.isEmpty()&&!modded.contains(player.getUniqueId()))player.sendResourcePackOffer(proxy.createResourcePackBuilder(packUrl).setId(PACK_ID).setHash(HexFormat.of().parseHex(packSha1)).setShouldForce(false).setPrompt(Component.text("Afri-Tiers gamemode and trophy icons")).build());
         }).delay(Duration.ofSeconds(2)).schedule();
     }
