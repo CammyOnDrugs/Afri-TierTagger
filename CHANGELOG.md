@@ -1,8 +1,16 @@
 # Afri-TiersTagger changelog
 
-Changes made during the Afri-Tiers customization of the original Tier Tagger mod, through client 2.7.1, Velocity 1.0.1 and Purpur 1.1.0.
+Changes made during the Afri-Tiers customization of the original Tier Tagger mod, through client 2.7.1, Velocity 1.0.1 and Purpur 1.1.1.
 
 The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. The entries below describe the Afri-Tiers additions, adaptations and fixes. Earlier customization work is grouped where a separate release number was not recorded.
+
+## Purpur 1.1.1 — Mandatory icon pack
+
+- Made the icon pack required for every player, including client-mod users. Requests use Minecraft's required-pack flag.
+- Disconnect players who decline, fail to load or discard their last recognised icon pack. A two-minute loading grace period prevents an unfinished download from bypassing the requirement.
+- Removed player controls for gamemode and trophy icons, including the old command options. Legacy saved icon opt-outs no longer suppress glyphs.
+- Kept rank-number and podium-color controls independent.
+- Added a verified hosted pack as the default for fresh installations, while retaining matching server.properties pack recognition.
 
 ## Purpur 1.1.0 — Native settings dialogs and icon-pack recognition
 
@@ -117,7 +125,7 @@ These support the mod but are changes to the backend or website:
 
 - Client 2.7.1 passed builds, 76 tests per version and actual startup checks for all six Minecraft versions, including the new DiaVanilla texture.
 - Velocity 1.0.1 passed 80 tests and startup/shutdown on an isolated Velocity 3.5.1 proxy.
-- Purpur 1.1.0 passed 86 tests. The authorised Surge test server started it successfully, constructed all four native dialog pages and passed a signed backend status request over verified TLS. Both reload commands succeeded.
+- Purpur 1.1.1 passed 93 tests. The authorised Surge test server started it successfully, constructed all four native dialog pages and passed a signed backend status request over verified TLS. Both reload commands succeeded.
 - The existing server-hosted icon pack matches the supplied pack. The plugin now recognises its load status and avoids duplicate automatic offers.
 - The live public queue feed returned HTTP 200 after its focused bot repair, and unsigned Minecraft API requests remained rejected.
-- A real player's visual confirmation and an actual linked-player queue join are separate from these startup, configuration and backend checks.
+- The user confirmed the native settings menu and glyphs work in 1.1.0. Version 1.1.1 additionally passed mandatory-pack policy tests and a live server startup check. An actual linked-player queue join remains a separate check.

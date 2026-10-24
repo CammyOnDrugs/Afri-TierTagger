@@ -15,7 +15,7 @@ final class SettingsCommand implements CommandExecutor, TabCompleter {
     @Override public boolean onCommand(CommandSender sender,Command command,String label,String[] args){execute(sender,args);return true;}
     @Override public List<String> onTabComplete(CommandSender sender,Command command,String alias,String[] args){return suggest(args);}
     private final AfriTiersPurpur plugin;
-    private static final List<String> BOOLEAN=List.of("enabled","tab","nametags","retired","icons","kit","rank-numbers","rank-trophies","podium-colors","waitlist","waitlist-sound","ticket","ticket-sound");
+    private static final List<String> BOOLEAN=List.of("enabled","tab","nametags","retired","kit","rank-numbers","podium-colors","waitlist","waitlist-sound","ticket","ticket-sound");
     SettingsCommand(AfriTiersPurpur plugin){this.plugin=plugin;}
     private void execute(CommandSender sender,String[] args){
         if(!(sender instanceof Player player)){sender.sendMessage(Component.text("Run /afritiers-settings in-game.",RED));return;}
@@ -39,6 +39,7 @@ final class SettingsCommand implements CommandExecutor, TabCompleter {
         }
         if(args.length!=2)throw new IllegalArgumentException("Use /afritiers-settings, or click a setting in the menu.");
         String key=args[0],value=args[1].toLowerCase(Locale.ROOT);
+        if(key.equals("icons")||key.equals("rank-trophies"))throw new IllegalArgumentException("Gamemode and trophy icons are required and cannot be disabled.");
         if(BOOLEAN.contains(key)){
             if(!value.equals("on")&&!value.equals("off"))throw new IllegalArgumentException("Use on or off.");
             boolean enabled=value.equals("on");

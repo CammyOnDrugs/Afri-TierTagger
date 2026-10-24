@@ -38,8 +38,9 @@ public final class AfriTiersPurpur extends JavaPlugin implements Listener,Comman
     private volatile boolean running;
     private TicketService tickets;
     private String packUrl="",packSha1="";
+    static final String ICON_URL="https://cdn.minepack.fr/pack/2b4e68df-79ea-47b8-83f3-fa11e9613c4c";
     static final String ICON_SHA1="b50b99783b5b86699c6cd36802c88d638dd63678";
-    private final Map<UUID,Set<UUID>> loadedPacks=new ConcurrentHashMap<>();
+    private final Map<UUID,IconPackState> loadedPacks=new ConcurrentHashMap<>();
     private static final UUID PACK_ID=UUID.fromString("77a65b27-b380-4ea8-a564-a8e70019e833");
     private PluginCommand linkedQueue;
     private TabCompleter previousCompleter;
@@ -49,6 +50,7 @@ public final class AfriTiersPurpur extends JavaPlugin implements Listener,Comman
         final Set<String> seen=new LinkedHashSet<>();
         final Deque<Notice> notices=new ArrayDeque<>();
         int displayTicks,notes;
+        final long iconDeadline=System.nanoTime()+Duration.ofMinutes(2).toNanos();
     }
     @Override public void onEnable(){
         try{
@@ -67,11 +69,12 @@ public final class AfriTiersPurpur extends JavaPlugin implements Listener,Comman
             Bukkit.getScheduler().runTaskTimer(this,this::pollQueues,1,100);
             Bukkit.getScheduler().runTaskTimer(this,this::refreshRankings,1,2400);
             Bukkit.getScheduler().runTaskTimer(this,tickets::poll,40,100);
-            getLogger().info("Afri-Tiers Purpur enabled for 1.21.11. Settings: /afritiers-settings.");
+            getLogger().info("Afri-Tiers icon pack is required for all players.");getLogger().info("Afri-Tiers Purpur enabled for 1.21.11. Settings: /afritiers-settings.");
         }catch(Exception error){getLogger().log(java.util.logging.Level.SEVERE,"Cannot initialize Afri-Tiers Purpur. Check config.yml and dependencies.",error);Bukkit.getPluginManager().disablePlugin(this);}
     }
     private void loadSettings(){
-        reloadConfig();String url=getConfig().getString("resource-pack-url",""),hash=getConfig().getString("resource-pack-sha1","");
+        reloadConfig();String url=getConfig().getString("resource-pack-url","").trim(),hash=getConfig().getString("resource-pack-sha1","").trim();
+        if(url.isBlank()){var supplied=Bukkit.getServer().getServerResourcePack();if(serverIcons(supplied,hash.isBlank()?ICON_SHA1:hash)){url=supplied.getUrl();hash=supplied.getHash();}else{url=ICON_URL;hash=ICON_SHA1;}}
         if(!url.isEmpty()){URI uri=URI.create(url);if(!"https".equals(uri.getScheme())||uri.getHost()==null||uri.getUserInfo()!=null||!hash.matches("[A-Fa-f0-9]{40}"))throw new IllegalArgumentException("Configure an HTTPS resource pack and SHA-1.");}
         packUrl=url;packSha1=hash;
     }
@@ -100,7 +103,7 @@ public final class AfriTiersPurpur extends JavaPlugin implements Listener,Comman
         if(command.getName().equals("join-queue"))return args.length==1?openModes(args[0]):List.of();
         if(command.getName().equals("afritiers")&&args.length==1)return rankings.all().stream().map(Rankings.Profile::name).filter(name->name.toLowerCase(Locale.ROOT).startsWith(args[0].toLowerCase(Locale.ROOT))).sorted().toList();return List.of();
     }
-    private CompletableFuture<String> get(String path,int limit){return http.sendAsync(HttpRequest.newBuilder(URI.create("https://afritiers.co.za"+path)).timeout(Duration.ofSeconds(15)).header("User-Agent","AfriTiersPurpur/1.1.0").GET().build(),PublicHttp.limitedUtf8(limit)).thenApply(response->{if(response.statusCode()!=200)throw new IllegalStateException();return response.body();});}
+    private CompletableFuture<String> get(String path,int limit){return http.sendAsync(HttpRequest.newBuilder(URI.create("https://afritiers.co.za"+path)).timeout(Duration.ofSeconds(15)).header("User-Agent","AfriTiersPurpur/1.1.1").GET().build(),PublicHttp.limitedUtf8(limit)).thenApply(response->{if(response.statusCode()!=200)throw new IllegalStateException();return response.body();});}
     private void refreshRankings(){if(!running||!refreshing.compareAndSet(false,true))return;get("/api/players",8_000_000).thenAccept(rankings::update).whenComplete((result,error)->{refreshing.set(false);if(error!=null)getLogger().warning("Rankings refresh failed; retaining the cached public rankings.");});}
     private void pollQueues(){if(!running||!polling.compareAndSet(false,true))return;
         get("/api/queues",65_536).thenAccept(raw->{QueueFeed feed=QueueFeed.parse(raw);Bukkit.getScheduler().runTask(this,()->{
@@ -113,17 +116,18 @@ public final class AfriTiersPurpur extends JavaPlugin implements Listener,Comman
     static boolean serverIcons(org.bukkit.packs.ResourcePack pack,String expected){return pack!=null&&pack.getId()!=null&&expected.matches("[a-fA-F0-9]{40}")&&expected.equalsIgnoreCase(pack.getHash());}
     private boolean serverIcons(){return serverIcons(Bukkit.getServer().getServerResourcePack(),packSha1.isBlank()?ICON_SHA1:packSha1);}
     void offerIcons(Player player){
-        if(!packUrl.isBlank())player.setResourcePack(PACK_ID,packUrl,HexFormat.of().parseHex(packSha1),Component.text("Afri-Tiers gamemode and rank trophy icons"),false);
-        else if(serverIcons()){var pack=Bukkit.getServer().getServerResourcePack();player.setResourcePack(pack.getId(),pack.getUrl(),HexFormat.of().parseHex(pack.getHash()),Component.text("Afri-Tiers gamemode and rank trophy icons"),false);}
+        if(!packUrl.isBlank())player.setResourcePack(PACK_ID,packUrl,HexFormat.of().parseHex(packSha1),Component.text("Afri-Tiers gamemode and rank trophy icons are required"),true);
+        else if(serverIcons()){var pack=Bukkit.getServer().getServerResourcePack();player.setResourcePack(pack.getId(),pack.getUrl(),HexFormat.of().parseHex(pack.getHash()),Component.text("Afri-Tiers gamemode and rank trophy icons are required"),true);}
     }
-    private void connected(Player player){preferences.get(player.getUniqueId());Session session=new Session();sessions.put(player.getUniqueId(),session);if(!packUrl.isEmpty()&&!serverIcons())Bukkit.getScheduler().runTaskLater(this,()->{if(current(player,session)&&!modded.contains(player.getUniqueId())&&!packLoaded.contains(player.getUniqueId()))offerIcons(player);},40);}
+    private void connected(Player player){preferences.get(player.getUniqueId());Session session=new Session();sessions.put(player.getUniqueId(),session);Bukkit.getScheduler().runTaskLater(this,()->{if(current(player,session)&&!packLoaded.contains(player.getUniqueId()))offerIcons(player);},40);}
     @EventHandler public void joined(PlayerJoinEvent event){connected(event.getPlayer());}
     @EventHandler public void quit(PlayerQuitEvent event){UUID id=event.getPlayer().getUniqueId();sessions.remove(id);modded.remove(id);packLoaded.remove(id);loadedPacks.remove(id);preferences.remove(id);tags.reset(id);}
     @EventHandler public void pack(PlayerResourcePackStatusEvent event){
         var serverPack=Bukkit.getServer().getServerResourcePack();boolean own=PACK_ID.equals(event.getID())&&!packUrl.isBlank();boolean supplied=serverIcons()&&serverPack.getId().equals(event.getID());if(!own&&!supplied)return;
-        UUID viewer=event.getPlayer().getUniqueId();Set<UUID> loaded=loadedPacks.computeIfAbsent(viewer,id->ConcurrentHashMap.newKeySet());
-        if(event.getStatus()==PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)loaded.add(event.getID());else if(!Set.of(PlayerResourcePackStatusEvent.Status.ACCEPTED,PlayerResourcePackStatusEvent.Status.DOWNLOADED).contains(event.getStatus()))loaded.remove(event.getID());
-        if(loaded.isEmpty())packLoaded.remove(viewer);else packLoaded.add(viewer);tags.refresh(event.getPlayer());
+        UUID viewer=event.getPlayer().getUniqueId();IconPackState state=loadedPacks.computeIfAbsent(viewer,id->new IconPackState());var outcome=state.accept(event.getID(),event.getStatus());
+        if(outcome==IconPackState.Outcome.READY)packLoaded.add(viewer);else packLoaded.remove(viewer);
+        if(outcome==IconPackState.Outcome.REJECTED&&event.getPlayer().isOnline())event.getPlayer().kick(Component.text("Afri-Tiers icons are required. Enable server resource packs and reconnect.",RED));
+        else tags.refresh(event.getPlayer());
     }
     @Override public void onPluginMessageReceived(String channel,Player player,byte[] message){if(channel.equals("afritiers:hello")&&message.length<=32){modded.add(player.getUniqueId());tags.refresh(player);}}
     void tickets(Player player,Session session,JsonArray rows){if(!current(player,session)||modded.contains(player.getUniqueId())||rows.size()>16)return;
@@ -131,7 +135,9 @@ public final class AfriTiersPurpur extends JavaPlugin implements Listener,Comman
         while(session.seen.size()>256){var first=session.seen.iterator();first.next();first.remove();}
     }
     private void tick(){if(!running)return;for(Player player:Bukkit.getOnlinePlayers()){
-        Session session=sessions.get(player.getUniqueId());if(session==null||modded.contains(player.getUniqueId()))continue;var p=prefs(player);
+        Session session=sessions.get(player.getUniqueId());if(session==null)continue;
+        if(!packLoaded.contains(player.getUniqueId())&&System.nanoTime()>=session.iconDeadline){player.kick(Component.text("The required Afri-Tiers icon pack did not load. Enable server resource packs and reconnect.",RED));continue;}
+        if(modded.contains(player.getUniqueId()))continue;var p=prefs(player);
         if(!p.waitlistAlerts||!p.waitlistSound)session.notes=0;if(session.notes>0){sound(player);session.notes--;}
         if(session.displayTicks>0){session.displayTicks-=2;continue;}Notice notice=session.notices.pollFirst();if(notice==null||(notice.ticket()?!p.ticketAlerts:!p.waitlistAlerts))continue;
         if((notice.ticket()?p.ticketLocation:p.waitlistLocation).equals("chat"))player.sendMessage(notice.title().append(Component.space()).append(notice.subtitle()));else player.showTitle(Title.title(notice.title(),notice.subtitle(),Title.Times.times(Duration.ZERO,Duration.ofSeconds(3),Duration.ZERO)));

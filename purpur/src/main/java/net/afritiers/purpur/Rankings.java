@@ -45,9 +45,9 @@ public final class Rankings {
         if(selected.equals("overall")||settings.highest.equals("always")||(chosen==null&&settings.highest.equals("not_found")))chosen=tiers.getFirst();
         if(chosen==null)return Component.empty();
         Component tag=Component.empty();
-        if(settings.rankTrophies&&resourcePack&&profile.position()>=1&&profile.position()<=3)tag=tag.append(Component.text(""+(char)(0xE900+profile.position())+" ",WHITE));
+        if(resourcePack&&profile.position()>=1&&profile.position()<=3)tag=tag.append(Component.text(""+(char)(0xE900+profile.position())+" ",WHITE));
         if(settings.rankNumbers&&profile.position()>0)tag=tag.append(Component.text("#"+profile.position()+" ",TextColor.color(settings.podiumColors?positionColor(profile.position()):0xAAAAAA)));
-        String modeLabel=resourcePack&&settings.icons?icon(chosen.mode()):chosen.mode();
+        String modeLabel=resourcePack?icon(chosen.mode()):chosen.mode();
         int color=settings.colors.getOrDefault(chosen.retired()?"retired":chosen.level(),0xAAAAAA);
         return tag.append(Component.text(modeLabel+" ",WHITE)).append(Component.text((chosen.retired()?"R":"")+chosen.level(),TextColor.color(color))).append(Component.text(" | ",GRAY));
     }

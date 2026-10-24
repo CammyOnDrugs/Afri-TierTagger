@@ -1,45 +1,31 @@
-# Afri-Tiers Purpur 1.1.0
+# Afri-Tiers Purpur 1.1.1
 
-For **Purpur 1.21.11**, Java 21 and PacketEvents **2.14.0**. Provides tier nametags, tab labels, overall placements, profile lookup, kit identification and queue alerts for players without the client mod.
+For Purpur/Paper-compatible Minecraft 1.21.11, Java 21 and PacketEvents Spigot/Paper 2.14.0.
 
 ## Install
 
-1. Put `AfriTiersPurpur-1.1.0.jar` and the Spigot/Paper build of PacketEvents 2.14.0 in the server's `plugins` folder.
-2. Keep AfriTiersLink 1.1.0 or newer installed with its working configuration and backend certificate for queue joining and personal ticket notifications.
-3. Restart the server. Run `/afritiers-settings` in-game to open the native Minecraft dialog menu.
+Stop the server, back up the old plugin outside plugins/, upload AfriTiersPurpur-1.1.1.jar and PacketEvents, then restart. Keep AfriTiersLink 1.1.0 or newer and its existing working configuration/certificate on the same backend for queue joining and personal ticket notices. Use either this display plugin or the Velocity display plugin for a connection.
 
-Use one server display integration on a connection. If the proxy runs AfriTiersVelocity, use that display integration instead of also installing AfriTiersPurpur on its backend. AfriTiersLink remains the queue/authentication bridge in either setup.
+## Required icons
 
-## Commands and settings
+The Afri-Tiers icon pack is mandatory. Every client, including client-mod users, must load it. Offers use Minecraft's required flag. Declining, failing to load or discarding the last recognised icon pack disconnects the player. A client that never finishes loading is disconnected after a two-minute grace period. The supplied default HTTPS URL and SHA-1 point to the hosted pack included in this bundle.
 
-- `/afritiers-settings`: native dialog pages for Display & Rankings, Tier Colors and Alerts; preferences are saved by UUID.
-- `/afritiers <Minecraft username>`: public profile lookup; gamemode rows contain tiers without repeated ranking numbers.
-- `/join-queue <gamemode>`: forwards the real player to the existing AfriTiersLink command. Press Tab after the space to list queues currently marked open in the public feed. The feed refreshes every five seconds; the backend makes the final queue-open and eligibility checks.
-- `/afritiersreload`: refresh rankings and reload server settings; requires `afritiers.purpur.reload` (the legacy `afritiers.reload` permission is also accepted).
+An existing server.properties pack is recognised when its SHA-1 matches the configured icon pack. Keep require-resource-pack=true when using that pack. If no recognised pack is loaded, the plugin sends its required offer automatically. The resource-pack URL and SHA-1 can be changed by the server operator in plugins/AfriTiersPurpur/config.yml when hosting a compatible pack elsewhere.
 
-Preferences include enabled, nametags, tab list, selected mode, highest-tier fallback, retired tiers, mode icons, kit identification, tier colors and waitlist/ticket Chat/Title/sound controls. Overall rank numbers, trophy icons and podium colors have independent switches. Positions use All Modes overall ranking. #1 is gold, #2 silver, #3 bronze and #4 onward gray. Turning podium colors off makes every number gray.
+Gamemode and rank-trophy icons have no player switches. Old saved opt-outs are ignored and migrated; old icon-setting commands are rejected. Rank-number and podium-color switches remain available. Text is used only while the required pack is still loading.
 
-Kit detection reads the server's synchronized inventory, armor and offhand. Ambiguous kits fall back to the selected mode. Observations remain in server memory. Existing scoreboard-team formatting and visibility are preserved. Players using the Afri-Tiers client mod retain their client display and alerts to avoid duplicates.
+## Settings and commands
 
-## Optional icon pack
+/afritiers-settings opens native Minecraft dialog pages for Display & Rankings, Tier Colors and Alerts. Save validates all inputs before persisting preferences by UUID. Cancel leaves preferences unchanged. If the client mod intercepts the command, use /afritierspurpur:afritiers-settings.
 
-Host `AfriTiers-server-icons-mc1.21.11.zip` at a direct public HTTPS download URL. Set `resource-pack-url` and `resource-pack-sha1` in `plugins/AfriTiersPurpur/config.yml` using the SHA-1 supplied with the pack, then restart or reload and reconnect. The plugin also recognises a matching icon pack supplied through server.properties, so it does not send a duplicate offer. Players may decline an optional pack; text labels work without it. Until the pack successfully loads, custom trophy glyphs are omitted. The pack includes the supplied DiaVanilla artwork.
+/afritiers <username> searches public tiers. /join-queue <mode> forwards the actual player to AfriTiersLink; Tab lists currently open queues. The existing verified Minecraft-to-Discord link and normal backend eligibility checks are reused.
 
-```yaml
-resource-pack-url: 'https://YOUR-PUBLIC-HOST/AfriTiers-server-icons-mc1.21.11.zip'
-resource-pack-sha1: 'THE-SHA1-SUPPLIED-WITH-THE-ICON-PACK'
-```
+/afritiersreload reloads this plugin's configuration and verifies signed backend connectivity. It requires afritiers.purpur.reload; the legacy afritiers.reload permission is accepted too. /afritiers-reload belongs to AfriTiersLink.
 
-## Queue integration
+Kit identification uses synchronized server inventory and equipment. Overall rankings remain the same across gamemodes. Profile mode rows contain tiers without repeated rank numbers. Modded clients keep their client display and alert handling, while mandatory pack enforcement still applies.
 
-AfriTiersLink identifies the actual Minecraft player, checks the existing Discord account link and applies the normal authentication, restrictions, cooldown and queue checks. No new Discord login is required. Personal ticket status uses the existing Link backend configuration and HTTPS certificate; no signing credentials are supplied in this distribution. Offline-mode servers require the authentication policy already configured for AfriTiersLink.
+## Build
 
-## Build and validation
-
-With JDK 21 and Maven, run `mvn package`. Output: `target/AfriTiersPurpur-1.1.0.jar`. Purpur and PacketEvents are provided dependencies; Gson is shaded. Unit and mocked integration tests cover open-queue completion, forwarding the actual player, unavailable backend behavior, offline authentication, settings persistence, ranking artwork, ticket signatures and shared kit/queue/HTTP rules.
-
-Built against the Purpur 1.21.11 API. The updated plugin was installed on the authorised Surge test server. Startup, native dialog construction, TLS and signed backend status are checked there. A real linked-player queue join still requires that player to connect and use the command.
+With JDK 21 and Maven, run mvn package. Output: target/AfriTiersPurpur-1.1.1.jar. Purpur and PacketEvents are provided dependencies; Gson is shaded. Tests cover native settings, legacy icon opt-outs, mandatory pack requests and load/failure state transitions, rankings, queue forwarding, authentication and shared kit/queue/HTTP rules.
 
 MPL-2.0; see LICENSE and NOTICE. PacketEvents is installed separately under its own license.
-
-If the client mod opens its own settings screen, use `/afritierspurpur:afritiers-settings` to open the server dialog explicitly.

@@ -20,7 +20,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 final class SettingsDialogs {
     record Toggle(String key,String title){}
-    static final List<Toggle> GENERAL=List.of(new Toggle("enabled","Enable tier display"),new Toggle("nametags","Nametags"),new Toggle("tab","Tab list"),new Toggle("retired","Show retired tiers"),new Toggle("icons","Gamemode icons"),new Toggle("kit","Identify kits"),new Toggle("rank-numbers","Overall rank numbers"),new Toggle("rank-trophies","Rank trophy icons"),new Toggle("podium-colors","Gold, silver and bronze colors"));
+    static final List<Toggle> GENERAL=List.of(new Toggle("enabled","Enable tier display"),new Toggle("nametags","Nametags"),new Toggle("tab","Tab list"),new Toggle("retired","Show retired tiers"),new Toggle("kit","Identify kits"),new Toggle("rank-numbers","Overall rank numbers"),new Toggle("podium-colors","Gold, silver and bronze colors"));
     static final List<Toggle> ALERTS=List.of(new Toggle("waitlist","Queue-opening alerts"),new Toggle("waitlist-sound","Queue-opening sound"),new Toggle("ticket","Testing-ticket alerts"),new Toggle("ticket-sound","Testing-ticket sound"));
     static final List<String> COLORS=List.of("HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5","retired");
     private final AfriTiersPurpur plugin;
@@ -33,9 +33,9 @@ final class SettingsDialogs {
         if(!message.isBlank())body.add(DialogBody.plainMessage(Component.text(message, message.startsWith("Saved")?GREEN:RED),320));
         if(page.equals("home")){
             body.add(DialogBody.plainMessage(Component.text("Choose the display, tier colors or alerts you want to change.",WHITE),320));
-            body.add(DialogBody.plainMessage(Component.text(iconsLoaded?"Icon pack loaded":"Accept the Afri-Tiers resource pack to see gamemode and trophy icons.",iconsLoaded?GREEN:GRAY),320));
+            body.add(DialogBody.plainMessage(Component.text(iconsLoaded?"Icon pack loaded":"The Afri-Tiers icon pack is required to play on this server.",iconsLoaded?GREEN:GRAY),320));
             return Dialog.create(builder->builder.empty().base(base("Afri-Tiers Settings",body,List.of())).type(DialogType.multiAction(List.of(
-                button(owner,"Display & rankings",(p,v)->open(p,"general","")),button(owner,"Tier colors",(p,v)->open(p,"colors","")),button(owner,"Alerts",(p,v)->open(p,"alerts","")),button(owner,"Load icon pack",(p,v)->{plugin.offerIcons(p);open(p,"home","");})
+                button(owner,"Display & rankings",(p,v)->open(p,"general","")),button(owner,"Tier colors",(p,v)->open(p,"colors","")),button(owner,"Alerts",(p,v)->open(p,"alerts",""))
             ),ActionButton.create(Component.text("Done"),null,150,null),2)));
         }
         List<DialogInput> inputs=new ArrayList<>();

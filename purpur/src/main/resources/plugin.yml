@@ -1,5 +1,5 @@
 name: AfriTiersPurpur
-version: '1.1.0'
+version: '1.1.1'
 main: net.afritiers.purpur.AfriTiersPurpur
 api-version: '1.21.11'
 depend: [packetevents]
