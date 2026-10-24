@@ -18,7 +18,7 @@ While in a world, the mod checks the public queue status every five seconds. A n
 
 The **Alerts** tab separately controls waitlist and testing-ticket notifications, Chat or Title placement, and sounds. Ticket notifications play one note. Waitlist alerts retain the original three-second sound sequence when enabled.
 
-Per-mode placements appear before tiers, with trophies for the top three active players. Tier colour inputs show a live colour swatch. Website and issue links appear in mod metadata.
+The player's overall All Modes leaderboard position appears before every tier, with the same position across gamemodes and trophies for the overall top three. The number is gold for #1, silver for #2, bronze for #3 and gray for #4 onward. Positions follow total points and the website's order for tied scores. Tier colour inputs show a live colour swatch. Website and issue links appear in mod metadata.
 
 The staff command `/afritiertester` and all staff API functionality have been removed. `/afritiersreload` and `/tiertagger` remain available.
 

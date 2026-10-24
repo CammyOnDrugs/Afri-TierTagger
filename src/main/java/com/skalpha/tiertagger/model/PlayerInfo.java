@@ -39,7 +39,7 @@ public record PlayerInfo(
       String url = "https://afritiers.co.za/api/players";
       HttpRequest request = HttpRequest.newBuilder(URI.create(url))
          .timeout(java.time.Duration.ofSeconds(15))
-         .header("User-Agent", "Afri-TiersTagger/2.5.0")
+         .header("User-Agent", "Afri-TiersTagger/2.6.1")
          .header("Cache-Control", "no-cache, no-store, must-revalidate")
          .header("Pragma", "no-cache")
          .GET()
@@ -65,24 +65,20 @@ public record PlayerInfo(
       if (array == null) throw new JsonParseException("Missing public players array");
       List<PlayerInfo> players = new ArrayList<>(array.size());
       for (JsonElement element : array) players.add(parsePlayer(element.getAsJsonObject()));
-      assignPositions(players);
+      assignOverallPositions(players);
       return players;
    }
 
-   static void assignPositions(List<PlayerInfo> players) {
-      var names = java.text.Collator.getInstance(Locale.ENGLISH);
-      for (String mode : players.stream().flatMap(player -> player.rankings().keySet().stream()).distinct().toList()) {
-         List<PlayerInfo> ranked = players.stream().filter(player -> {
-            Ranking ranking = player.rankings().get(mode);
-            return ranking != null && !ranking.retired() && tierRankValue(ranking.tierName()) < 999;
-         }).sorted(Comparator.<PlayerInfo>comparingInt(player -> tierRankValue(player.rankings().get(mode).tierName()))
-            .thenComparing(Comparator.<PlayerInfo>comparingInt(player -> player.rankings().get(mode).points()).reversed())
-            .thenComparing(PlayerInfo::name, names)).toList();
-         for (int index = 0; index < ranked.size(); index++) {
-            Map<String, Ranking> rankings = ranked.get(index).rankings();
-            Ranking previous = rankings.get(mode);
-            rankings.put(mode, new Ranking(previous.tierName(), previous.tier(), previous.retired(), previous.points(), index + 1));
-         }
+   static void assignOverallPositions(List<PlayerInfo> players) {
+      List<PlayerInfo> ranked = players.stream().filter(player -> !player.rankings().isEmpty())
+         .sorted(Comparator.comparingInt(PlayerInfo::points).reversed()).toList();
+      Map<PlayerInfo, Integer> positions = new java.util.IdentityHashMap<>();
+      for (int index = 0; index < ranked.size(); index++) positions.put(ranked.get(index), index + 1);
+      for (int index = 0; index < players.size(); index++) {
+         PlayerInfo player = players.get(index);
+         int position = positions.getOrDefault(player, 0);
+         player.rankings().replaceAll((mode, previous) -> new Ranking(previous.tierName(), previous.tier(), previous.retired(), previous.points(), position));
+         players.set(index, new PlayerInfo(player.uuid(), player.name(), player.rankings(), player.region(), player.points(), position, player.badges(), player.combatMaster()));
       }
    }
 

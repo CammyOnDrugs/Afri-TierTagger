@@ -166,9 +166,11 @@ public class TierTagger implements ModInitializer {
    }
 
    public static MutableText rankingPosition(PlayerInfo.Ranking ranking) {
-      if (ranking.position() <= 0 || ranking.retired()) return Text.empty();
+      if (ranking.position() <= 0) return Text.empty();
       String trophy = switch (ranking.position()) { case 1 -> "\uE901 "; case 2 -> "\uE902 "; case 3 -> "\uE903 "; default -> ""; };
-      return Text.literal(trophy + "#" + ranking.position() + " ").formatted(Formatting.WHITE);
+      int color = switch (ranking.position()) { case 1 -> 0xFFD700; case 2 -> 0xC0C0C0; case 3 -> 0xCD7F32; default -> 0xAAAAAA; };
+      return Text.empty().append(Text.literal(trophy).formatted(Formatting.WHITE))
+         .append(Text.literal("#" + ranking.position() + " ").styled(style -> style.withColor(color)));
    }
 
    public static void invalidateTierComponentCache() {
