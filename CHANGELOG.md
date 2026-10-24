@@ -11,6 +11,7 @@ The original mod already provided tier labels, nametag/tab display, player searc
 - Included the DiaVanilla icon in every supported client build and in the optional server icon resource pack.
 - Retained the existing verified Minecraft-to-Discord queue flow. A queue request uses the actual connected Minecraft player; the backend resolves their linked Discord account and applies eligibility checks.
 - Added regression checks for open/closed suggestions, canonical mode aliases and the dedicated DiaVanilla icon.
+- Restored the live bot queue-feed route and opening-event recording after the current bot source had lost that integration. This repaired the HTTP 503 feed failure that prevented in-game queue-open alerts. The existing mod benefits from this server-side repair without an update.
 
 ## Purpur 1.0.0 — New server plugin
 
@@ -104,4 +105,5 @@ These support the mod but are changes to the backend or website:
 
 ## Validation and installation status
 
-The previous 2.7.0 release passed builds, tests and actual client startup checks for all six Minecraft versions. The updated 2.7.1 and plugin validation results are listed in the accompanying release notes. Purpur server deployment and an actual authenticated queue join were not performed on a production Minecraft server.
+Client 2.7.1 passed builds, tests and actual startup checks for all six Minecraft versions, including loading the new DiaVanilla texture. Velocity 1.0.1 passed 80 tests and startup/shutdown on an isolated Velocity 3.5.1 proxy. Purpur 1.0.0 passed 77 unit and mocked integration tests. All eight GitHub build jobs passed. The live queue feed returned HTTP 200 after its focused bot repair, and the authenticated Minecraft status endpoint accepted a signed read-only request while rejecting an unsigned request. Two focused regressions verified the actual bot start handler, persisted opening metadata and final API routing. A live Purpur startup, production plugin deployment and an actual linked-player queue join still need verification on the target server.
+
