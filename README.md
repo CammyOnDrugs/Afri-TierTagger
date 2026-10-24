@@ -1,10 +1,22 @@
 # Afri-TiersTagger
 
-Fabric client mod for Minecraft **1.21.11**, maintained by **Brianni_MC (Afri-Tiers)**.
+Fabric client mod for Minecraft **1.21.11 through 26.3**, maintained by **Brianni_MC (Afri-Tiers)**.
 
 Displays Afri-Tiers rankings beside player names, with the existing tier colours, icons, player search and settings. Rankings load from the public Afri-Tiers website.
 
-## Install
+## Versions and proxy plugin
+
+| Minecraft | Project | Java | Additional requirements |
+| --- | --- | --- | --- |
+| 1.21.11 | Repository root | 21 | Fabric API for 1.21.11, Ukulib 1.10.2 |
+| 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | [modern](modern/) | 25 | Fabric API for the exact Minecraft release |
+| Velocity 3.5.1 with Minecraft 1.21.11 | [velocity](velocity/) | 21 | PacketEvents Velocity 2.14.0 |
+
+Version **2.7.0** adds independent switches for overall rank numbers, rank trophy icons, and gold/silver/bronze podium colors. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
+
+Both the client and proxy settings open with **`/afritiers-settings`**. The client opens its settings screen, while the proxy offers a clickable chat menu for players without the mod. The Velocity plugin also provides tags, player lookup, kit identification and queue alerts; see its README for the icon resource pack and backend queue integration.
+
+## Install for Minecraft 1.21.11
 
 Use Java 21, Fabric Loader 0.18.4 or newer, Fabric API for 1.21.11 and Ukulib 1.10.2 for 1.21.11. Remove the previous Afri-TiersTagger JAR before adding the updated JAR. Keep only one version installed.
 
@@ -18,7 +30,7 @@ While in a world, the mod checks the public queue status every five seconds. A n
 
 The **Alerts** tab separately controls waitlist and testing-ticket notifications, Chat or Title placement, and sounds. Ticket notifications play one note. Waitlist alerts retain the original three-second sound sequence when enabled.
 
-The player's overall All Modes leaderboard position appears before every tier, with the same position across gamemodes and trophies for the overall top three. The number is gold for #1, silver for #2, bronze for #3 and gray for #4 onward. Positions follow total points and the website's order for tied scores. Tier colour inputs show a live colour swatch. Website and issue links appear in mod metadata.
+The player's overall All Modes leaderboard position appears in nametags and the tab list, with the same position across gamemodes and trophies for the overall top three. The number is gold for #1, silver for #2, bronze for #3 and gray for #4 onward. Positions follow total points and the website's order for tied scores. Tier colour inputs show a live colour swatch. Website and issue links appear in mod metadata.
 
 The staff command `/afritiertester` and all staff API functionality have been removed. `/afritiersreload` and `/tiertagger` remain available.
 

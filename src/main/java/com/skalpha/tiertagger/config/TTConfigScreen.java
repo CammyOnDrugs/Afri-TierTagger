@@ -144,6 +144,9 @@ public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
             com.skalpha.tiertagger.kit.KitIdentifier.clear();
             TierTagger.invalidateTierComponentCache();
          }));
+         var2.add(CyclingOption.ofBoolean("tiertagger.config.rankNumbers", var1.isRankNumbers(), value -> { var1.setRankNumbers(value); TierTagger.invalidateTierComponentCache(); }));
+         var2.add(CyclingOption.ofBoolean("tiertagger.config.rankTrophies", var1.isRankTrophies(), value -> { var1.setRankTrophies(value); TierTagger.invalidateTierComponentCache(); }));
+         var2.add(CyclingOption.ofBoolean("tiertagger.config.podiumColors", var1.isPodiumColors(), value -> { var1.setPodiumColors(value); TierTagger.invalidateTierComponentCache(); }));
          var2.add(new ScreenOpenButton("tiertagger.config.search", PlayerSearchScreen::new));
          return var2.toArray(WidgetCreator[]::new);
       }

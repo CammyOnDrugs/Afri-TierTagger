@@ -1,0 +1,166 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_axe.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_mace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_nethop.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_pot.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_sword.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_uhc.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_vanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_bed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_creeper.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_dia_smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_cart.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_ogv.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_speed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/afritiers_spear.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/trophy-golden.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/trophy-silver.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:afritiers/trophy-bronze.png",
+      "ascent": 8,
+      "height": 9,
+      "chars": [
+        ""
+      ]
+    }
+  ]
+}

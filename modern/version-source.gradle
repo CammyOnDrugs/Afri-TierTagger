@@ -1,0 +1,53 @@
+def sourceDirectory = file('src/main/java')
+def generatedDirectory = layout.buildDirectory.dir('generated/version-java')
+sourceSets.main.java.setSrcDirs([generatedDirectory])
+def prepare = tasks.register('prepareVersionSources') {
+    inputs.dir(sourceDirectory)
+    inputs.property('minecraftVersion', project.minecraft_version)
+    outputs.dir(generatedDirectory)
+    doLast {
+        def output = generatedDirectory.get().asFile
+        if (!output.toPath().toAbsolutePath().normalize().startsWith(layout.buildDirectory.get().asFile.toPath().toAbsolutePath().normalize())) throw new GradleException('Generated source path is outside build directory')
+        delete(output)
+        def replacements = [
+    "client.keybinding.v1.KeyBindingHelper": "client.keymapping.v1.KeyMappingHelper",
+    "KeyBindingHelper": "KeyMappingHelper",
+    "registerKeyBinding": "registerKeyMapping",
+    "ClientCommandManager": "ClientCommands",
+    ".getWorld()": ".getLevel()",
+    "PayloadTypeRegistry.playS2C()": "PayloadTypeRegistry.clientboundPlay()",
+    "PayloadTypeRegistry.playC2S()": "PayloadTypeRegistry.serverboundPlay()",
+    ".player.displayClientMessage(message, false)": ".player.sendSystemMessage(message)",
+    ".player.displayClientMessage(Component.literal(\"Displayed gamemode: \").append(var1x.asStyled(false)), true)": ".player.sendOverlayMessage(Component.literal(\"Displayed gamemode: \").append(var1x.asStyled(false)))",
+    "client.gui.getChat().addMessage(": "client.player.sendSystemMessage(",
+    "GuiGraphics": "GuiGraphicsExtractor",
+    "void render(": "void extractRenderState(",
+    "super.render(": "super.extractRenderState(",
+    "this.textField.render(": "this.textField.extractRenderState(",
+    "graphics.drawCenteredString(": "graphics.centeredText(",
+    "graphics.drawString(": "graphics.text("
+]
+        if (project.minecraft_version in ['26.2', '26.3']) replacements.putAll([
+    "Minecraft.getInstance().setScreen(": "Minecraft.getInstance().gui.setScreen(",
+    "client.setScreen(": "client.gui.setScreen(",
+    "var0.setScreen(": "var0.gui.setScreen(",
+    "client.screen": "client.gui.screen()",
+    "var0.screen": "var0.gui.screen()",
+    ".player.displayClientMessage(message, false)": ".player.sendSystemMessage(message)",
+    ".player.displayClientMessage(Component.literal(\"Displayed gamemode: \").append(var1x.asStyled(false)), true)": ".player.sendOverlayMessage(Component.literal(\"Displayed gamemode: \").append(var1x.asStyled(false)))",
+    "client.gui.getChat().addMessage(": "client.player.sendSystemMessage(",
+    "client.gui.setTimes(": "client.gui.hud.setTimes(",
+    "client.gui.setSubtitle(": "client.gui.hud.setSubtitle(",
+    "client.gui.setTitle(": "client.gui.hud.setTitle("
+])
+        fileTree(sourceDirectory).matching { include '**/*.java' }.each { original ->
+            def destination = new File(output, sourceDirectory.toPath().relativize(original.toPath()).toString())
+            destination.parentFile.mkdirs()
+            def text = original.getText('UTF-8')
+            replacements.each { from, to -> text = text.replace(from, to) }
+            destination.setText(text, 'UTF-8')
+        }
+    }
+}
+tasks.named('compileJava') { dependsOn prepare }
+tasks.named('sourcesJar') { dependsOn prepare }

@@ -1,0 +1,26 @@
+plugins { id 'net.fabricmc.fabric-loom' version '1.18.4' }
+version = "2.7.0+mc${project.minecraft_version}"
+group = 'com.skalpha.tiertagger'
+base { archivesName = 'Afri-TiersTagger' }
+repositories { mavenCentral() }
+def apiVersions = ['26.1':'0.145.1+26.1','26.1.1':'0.145.4+26.1.1','26.1.2':'0.155.3+26.1.2','26.2':'0.161.0+26.2','26.3':'0.165.0+26.3']
+if (!apiVersions.containsKey(project.minecraft_version)) throw new GradleException('Choose Minecraft 26.1, 26.1.1, 26.1.2, 26.2 or 26.3')
+def selectedApi = project.findProperty('fabric_api_version') ?: apiVersions[project.minecraft_version]
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${selectedApi}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraftVersion', project.minecraft_version
+    filesMatching('fabric.mod.json') { expand 'version': project.version, 'minecraftVersion': project.minecraft_version }
+}
+java { toolchain.languageVersion = JavaLanguageVersion.of(25); withSourcesJar() }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 25 }
+test { useJUnitPlatform(); maxHeapSize = '192m'; jvmArgs '-XX:+UseSerialGC', '-XX:ActiveProcessorCount=2' }
+jar { from('LICENSE', 'NOTICE') }
+
+apply from: 'version-source.gradle'

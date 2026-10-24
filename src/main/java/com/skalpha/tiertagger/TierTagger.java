@@ -67,6 +67,7 @@ public class TierTagger implements ModInitializer {
       ClientCommandRegistrationCallback.EVENT
          .register(
             (ClientCommandRegistrationCallback)(var0, var1x) -> {
+               var0.register(ClientCommandManager.literal("afritiers-settings").executes(context -> { MinecraftClient client = MinecraftClient.getInstance(); client.execute(() -> client.setScreen(new TTConfigScreen(client.currentScreen))); return 1; }));
                var0.register((LiteralArgumentBuilder)ClientCommandManager.literal("afritiersreload").executes(TierTagger::reloadTiers));
                var0.register(
                   (LiteralArgumentBuilder)((LiteralArgumentBuilder)ClientCommandManager.literal("tiertagger")
@@ -167,10 +168,17 @@ public class TierTagger implements ModInitializer {
 
    public static MutableText rankingPosition(PlayerInfo.Ranking ranking) {
       if (ranking.position() <= 0) return Text.empty();
-      String trophy = switch (ranking.position()) { case 1 -> "\uE901 "; case 2 -> "\uE902 "; case 3 -> "\uE903 "; default -> ""; };
-      int color = switch (ranking.position()) { case 1 -> 0xFFD700; case 2 -> 0xC0C0C0; case 3 -> 0xCD7F32; default -> 0xAAAAAA; };
-      return Text.empty().append(Text.literal(trophy).formatted(Formatting.WHITE))
-         .append(Text.literal("#" + ranking.position() + " ").styled(style -> style.withColor(color)));
+      TierTaggerConfig config = manager.getConfig();
+      String trophy = config.isRankTrophies() ? switch (ranking.position()) {
+         case 1 -> "\uE901 "; case 2 -> "\uE902 "; case 3 -> "\uE903 "; default -> "";
+      } : "";
+      int color = config.isPodiumColors() ? switch (ranking.position()) {
+         case 1 -> 0xFFD700; case 2 -> 0xC0C0C0; case 3 -> 0xCD7F32; default -> 0xAAAAAA;
+      } : 0xAAAAAA;
+      MutableText result = Text.empty();
+      if (!trophy.isEmpty()) result.append(Text.literal(trophy).formatted(Formatting.WHITE));
+      if (config.isRankNumbers()) result.append(Text.literal("#" + ranking.position() + " ").styled(style -> style.withColor(color)));
+      return result;
    }
 
    public static void invalidateTierComponentCache() {
@@ -217,7 +225,7 @@ public class TierTagger implements ModInitializer {
    }
 
    public static Text getRankingText(PlayerInfo.Ranking var0, boolean var1) {
-      return rankingPosition(var0).append(tierText(var0, var1));
+      return tierText(var0, var1);
    }
 
    private static Text tierText(PlayerInfo.Ranking var0, boolean var1) {

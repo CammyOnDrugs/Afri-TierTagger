@@ -39,5 +39,8 @@
   "tiertagger.alerts.ticketLocation": "Where show when testing ticket opens",
   "tiertagger.alerts.ticketSound": "Testing ticket sound",
   "tiertagger.alerts.location.chat": "Chat",
-  "tiertagger.alerts.location.title": "Title"
+  "tiertagger.alerts.location.title": "Title",
+  "tiertagger.config.rankNumbers": "Overall rank numbers",
+  "tiertagger.config.rankTrophies": "Rank trophy icons",
+  "tiertagger.config.podiumColors": "Gold, silver and bronze rank colors"
 }

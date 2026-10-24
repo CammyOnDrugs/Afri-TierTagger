@@ -3,7 +3,41 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
-  build:
+  client:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { minecraft: '1.21.11', java: '21' }
+          - { minecraft: '26.1', java: '25' }
+          - { minecraft: '26.1.1', java: '25' }
+          - { minecraft: '26.1.2', java: '25' }
+          - { minecraft: '26.2', java: '25' }
+          - { minecraft: '26.3', java: '25' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew modern/gradlew
+      - name: Build matching client
+        run: |
+          if [ '${{ matrix.minecraft }}' = '1.21.11' ]; then
+            ./gradlew build --no-daemon --max-workers=2
+          else
+            cd modern
+            ./gradlew -Pminecraft_version=${{ matrix.minecraft }} build --no-daemon --max-workers=2
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Afri-TiersTagger-mc${{ matrix.minecraft }}
+          path: |
+            build/libs/*.jar
+            modern/build/libs/*.jar
+  velocity:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -11,10 +45,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: gradle/actions/setup-gradle@v4
-      - run: chmod +x gradlew
-      - run: ./gradlew build --no-daemon
+          cache: maven
+          cache-dependency-path: velocity/pom.xml
+      - run: mvn -B -f velocity/pom.xml package
       - uses: actions/upload-artifact@v4
         with:
-          name: Afri-TiersTagger
-          path: build/libs/*.jar
+          name: AfriTiersVelocity
+          path: velocity/target/AfriTiersVelocity-1.0.0.jar

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "afri-tierstagger-tester",
+  "version": "${version}",
+  "name": "Afri-TiersTagger",
+  "description": "Shows African players' Afri-Tiers rankings next to their names.",
+  "authors": [
+    "Brianni_MC (Afri-Tiers)"
+  ],
+  "contact": {
+    "sources": "https://github.com/CammyOnDrugs/Afri-TierTagger",
+    "homepage": "https://afritiers.co.za",
+    "issues": "https://github.com/CammyOnDrugs/Afri-TierTagger/issues"
+  },
+  "license": "MPL-2.0",
+  "icon": "assets/tier-tagger/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "com.skalpha.tiertagger.TierTagger"
+    ]
+  },
+  "mixins": [
+    "AfriTierTagger.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "${minecraftVersion}",
+    "fabric-api": "*",
+    "java": ">=25"
+  }
+}

@@ -15,6 +15,15 @@ public class TierTaggerConfig implements Serializable {
    private boolean showRetired = true;
    private TierTaggerConfig.HighestMode highestMode = TierTaggerConfig.HighestMode.NOT_FOUND;
    private boolean showIcons = true;
+   private boolean rankNumbers = true;
+   private boolean rankTrophies = true;
+   private boolean podiumColors = true;
+   public boolean isRankNumbers() { return rankNumbers; }
+   public void setRankNumbers(boolean value) { rankNumbers = value; }
+   public boolean isRankTrophies() { return rankTrophies; }
+   public void setRankTrophies(boolean value) { rankTrophies = value; }
+   public boolean isPodiumColors() { return podiumColors; }
+   public void setPodiumColors(boolean value) { podiumColors = value; }
    private boolean playerList = true;
    private int retiredColor = 10671871;
    private double sliderValue = 50.0;
