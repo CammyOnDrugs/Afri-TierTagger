@@ -31,6 +31,13 @@ final class TicketService implements AutoCloseable {
             settings=new Settings(client,url,server,secret,config.getBoolean("trusted-proxy-authentication",false),config.getBoolean("allow-unverified-server-session",false));
         }catch(Exception error){plugin.getLogger().warning("Ticket integration unavailable; check AfriTiersLink configuration and backend certificate.");}
     }
+    void verifyBackend(){
+        Settings active=settings;if(closed||active==null)return;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
+            try{JsonObject body=new JsonObject();body.addProperty("action","status");body.add("players",new JsonArray());JsonObject response=request(active,body);if(!response.has("ok")||!response.get("ok").getAsBoolean())throw new IllegalStateException();if(!closed&&settings==active)plugin.getLogger().info("AfriTiersLink backend verified: TLS and signed queue status are working.");}
+            catch(Exception error){if(!closed&&settings==active)plugin.getLogger().warning("AfriTiersLink backend verification failed: "+error.getClass().getSimpleName()+". Check backend settings, certificate and network access.");}
+        });
+    }
     boolean authenticated(Player player){
         if(!player.isOnline())return false;if(Bukkit.getOnlineMode())return true;
         if(Bukkit.getPluginManager().isPluginEnabled("AuthMe"))try{Class<?> api=Class.forName("fr.xephi.authme.api.v3.AuthMeApi");Object instance=api.getMethod("getInstance").invoke(null);return instance!=null&&Boolean.TRUE.equals(api.getMethod("isAuthenticated",Player.class).invoke(instance,player));}catch(ReflectiveOperationException error){return false;}

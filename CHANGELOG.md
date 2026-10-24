@@ -1,8 +1,18 @@
 # Afri-TiersTagger changelog
 
-Changes made during the Afri-Tiers customization of the original Tier Tagger mod, through client 2.7.1, Velocity 1.0.1 and Purpur 1.0.0.
+Changes made during the Afri-Tiers customization of the original Tier Tagger mod, through client 2.7.1, Velocity 1.0.1 and Purpur 1.1.0.
 
 The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. The entries below describe the Afri-Tiers additions, adaptations and fixes. Earlier customization work is grouped where a separate release number was not recorded.
+
+## Purpur 1.1.0 — Native settings dialogs and icon-pack recognition
+
+- Replaced the chat settings menu with Minecraft's native dialog UI. Display & Rankings, Tier Colors and Alerts have dedicated pages with Save and Cancel controls.
+- Added checkbox controls, gamemode/fallback choices, alert display choices and editable hex colors, while retaining the independent rank-number, trophy and podium-color switches.
+- Scoped dialog callbacks to their opening player and current connection; malformed or incomplete input is rejected before changing preferences.
+- Recognised the Afri-Tiers icon pack when it is supplied by server.properties, fixing the plain `sword` label even though the correct pack was already loaded.
+- Avoided duplicate automatic resource-pack offers and added a Load Icon Pack action to the settings dialog.
+- Added a read-only backend check at startup/reload to verify TLS and signed queue status from the Minecraft server.
+- Prepared and deployed the update on the authorised Surge test server, with the existing icon pack, correct Surge backend configuration and certificate. The test server was switched to online mode at the user's request.
 
 ## 2.7.1 — Open-queue completion and DiaVanilla artwork
 

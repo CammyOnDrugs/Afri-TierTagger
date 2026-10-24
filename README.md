@@ -60,3 +60,5 @@ Derived from Tier Tagger; original copyright and MPL-2.0 terms are preserved in 
 ## Latest additions
 
 `/join-queue ` completes only currently open queues. DiaVanilla uses its supplied dedicated icon. The [full changelog](CHANGELOG.md) records Afri-Tiers customization since the original mod. A [Purpur 1.21.11 plugin](purpur/) is also available with `/afritiers-settings`.
+
+Purpur 1.1.0 uses Minecraft native settings dialogs and recognises the matching icon pack provided by server.properties. See [Purpur installation](purpur/README.md).

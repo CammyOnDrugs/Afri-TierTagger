@@ -21,15 +21,15 @@ final class SettingsCommand implements CommandExecutor, TabCompleter {
         if(!(sender instanceof Player player)){sender.sendMessage(Component.text("Run /afritiers-settings in-game.",RED));return;}
         var prefs=plugin.prefs(player);
         try{
-            if(args.length>0&&!args[0].equals("colors")){
+            if(args.length>0&&!List.of("colors","general","alerts").contains(args[0])){
                 change(prefs,args);
                 plugin.preferences.save(player.getUniqueId());plugin.tags.refresh(player);
                 player.sendMessage(Component.text("Afri-Tiers setting saved.",GREEN));
             }
-            if(args.length>0&&(args[0].equals("colors")||args[0].equals("color"))){colors(player,prefs);return;}
-            menu(player,prefs);
+            String page=args.length==0?"home":switch(args[0]){case "colors","color"->"colors";case "general"->"general";case "alerts"->"alerts";default->"home";};
+            plugin.dialogs.open(player,page,"");
         }catch(IllegalArgumentException error){player.sendMessage(Component.text(error.getMessage(),RED));}
-        catch(Exception error){player.sendMessage(Component.text("Could not save settings; ask staff to check the proxy's data directory.",RED));}
+        catch(Exception error){player.sendMessage(Component.text("Could not save settings; ask staff to check the server's data directory.",RED));}
     }
     static void change(Preferences prefs,String[] args){
         if(args.length==3&&args[0].equals("color")){
@@ -52,35 +52,9 @@ final class SettingsCommand implements CommandExecutor, TabCompleter {
             default->throw new IllegalArgumentException("Unknown Afri-Tiers setting.");
         }
     }
-    private Component action(String text,String args){return Component.text("["+text+"]",AQUA).clickEvent(ClickEvent.runCommand("/afritiers-settings "+args));}
-    private void row(Player player,String title,String key,boolean enabled){player.sendMessage(Component.text(title+": ",WHITE).append(action(enabled?"ON":"OFF",key+" "+(enabled?"off":"on"))));}
-    private void menu(Player player,Preferences p){
-        player.sendMessage(Component.text("Afri-Tiers Settings — click to change",GOLD));
-        row(player,"Enabled","enabled",p.enabled);row(player,"Tab list","tab",p.playerList);row(player,"Nametags","nametags",p.nameTags);
-        int next=(Rankings.MODES.indexOf(p.gameMode)+1)%Rankings.MODES.size();
-        player.sendMessage(Component.text("Gamemode: ",WHITE).append(action(p.gameMode,"mode "+Rankings.MODES.get(next))));
-        String nextHighest=switch(p.highest){case "always"->"never";case "never"->"not_found";default->"always";};
-        player.sendMessage(Component.text("Highest tier fallback: ",WHITE).append(action(p.highest,"highest "+nextHighest)));
-        row(player,"Show retired","retired",p.showRetired);row(player,"Gamemode icons","icons",p.icons);row(player,"Kit identifier","kit",p.kitIdentifier);
-        row(player,"Overall rank numbers","rank-numbers",p.rankNumbers);row(player,"Rank trophy icons","rank-trophies",p.rankTrophies);row(player,"Gold/silver/bronze colors","podium-colors",p.podiumColors);
-        player.sendMessage(action("Tier colors","colors"));
-        row(player,"Waitlist alerts","waitlist",p.waitlistAlerts);row(player,"Waitlist sound","waitlist-sound",p.waitlistSound);
-        player.sendMessage(Component.text("Waitlist location: ",WHITE).append(action(p.waitlistLocation,"waitlist-location "+(p.waitlistLocation.equals("chat")?"title":"chat"))));
-        row(player,"Ticket alerts","ticket",p.ticketAlerts);row(player,"Ticket sound","ticket-sound",p.ticketSound);
-        player.sendMessage(Component.text("Ticket location: ",WHITE).append(action(p.ticketLocation,"ticket-location "+(p.ticketLocation.equals("chat")?"title":"chat"))));
-        player.sendMessage(Component.text("Search: /afritiers <player>  •  Queue: /join-queue <mode>",GRAY));
-    }
-    private void colors(Player player,Preferences prefs){
-        player.sendMessage(Component.text("Tier colors — click a swatch to edit #RRGGBB",GOLD));
-        for(String key:List.of("retired","HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5")){
-            String hex=String.format("#%06X",prefs.colors.get(key));
-            player.sendMessage(Component.text("■ "+key+" "+hex,TextColor.color(prefs.colors.get(key))).clickEvent(ClickEvent.suggestCommand("/afritiers-settings color "+key+" "+hex)));
-        }
-        player.sendMessage(action("Back",""));
-    }
     private List<String> suggest(String[] args){
         
-        if(args.length<=1){String prefix=args.length==0?"":args[0];List<String> choices=new ArrayList<>(BOOLEAN);choices.addAll(List.of("mode","highest","colors","color","waitlist-location","ticket-location"));return choices.stream().filter(v->v.startsWith(prefix)).toList();}
+        if(args.length<=1){String prefix=args.length==0?"":args[0];List<String> choices=new ArrayList<>(BOOLEAN);choices.addAll(List.of("mode","highest","general","alerts","colors","color","waitlist-location","ticket-location"));return choices.stream().filter(v->v.startsWith(prefix)).toList();}
         List<String> values=BOOLEAN.contains(args[0])?List.of("on","off"):switch(args[0]){case "mode"->Rankings.MODES;case "highest"->List.of("always","never","not_found");case "waitlist-location","ticket-location"->List.of("chat","title");case "color"->List.of("retired","HT1","LT1","HT2","LT2","HT3","LT3","HT4","LT4","HT5","LT5");default->List.of();};
         return args.length==2?values.stream().filter(v->v.startsWith(args[1])).toList():List.of();
     }
