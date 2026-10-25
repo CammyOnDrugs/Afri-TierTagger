@@ -4,18 +4,16 @@ Fabric client mod for Minecraft **1.21.11 through 26.3**, maintained by **Briann
 
 Displays Afri-Tiers rankings beside player names, with the existing tier colours, icons, player search and settings. Rankings load from the public Afri-Tiers website.
 
-## Versions and proxy plugin
+## Versions
 
 | Minecraft | Project | Java | Additional requirements |
 | --- | --- | --- | --- |
 | 1.21.11 | Repository root | 21 | Fabric API for 1.21.11, Ukulib 1.10.2 |
 | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | [modern](modern/) | 25 | Fabric API for the exact Minecraft release |
-| Velocity 3.5.1 with Minecraft 1.21.11 | [velocity](velocity/) | 21 | PacketEvents Velocity 2.14.0 |
-| Purpur 1.21.11 | [purpur](purpur/) | 21 | PacketEvents Spigot/Paper 2.14.0 |
 
 Version **2.7.1** adds independent switches for overall rank numbers, rank trophy icons, and gold/silver/bronze podium colors. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
 
-Both the client and proxy settings open with **`/afritiers-settings`**. The client opens its settings screen, while the proxy offers a clickable chat menu for players without the mod. The Velocity plugin also provides tags, player lookup, kit identification and queue alerts; see its README for the icon resource pack and backend queue integration.
+Open the client settings screen with **`/afritiers-settings`**.
 
 ## Install for Minecraft 1.21.11
 
@@ -57,10 +55,8 @@ This repository contains client source, build files, tests and public artwork on
 
 Derived from Tier Tagger; original copyright and MPL-2.0 terms are preserved in [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-## Latest additions
+## Latest release
 
-`/join-queue ` completes only currently open queues. DiaVanilla uses its supplied dedicated icon. The [full changelog](CHANGELOG.md) records Afri-Tiers customization since the original mod. A [Purpur 1.21.11 plugin](purpur/) is also available with `/afritiers-settings`.
+[Download 2.7.1](https://github.com/CammyOnDrugs/Afri-TierTagger/releases/tag/v2.7.1) for your exact Minecraft version. The release includes all six client JARs, a combined download, mod-only source, changelog and SHA-256 checksums. See [release notes](RELEASE-NOTES.md) and the [client changelog](CHANGELOG.md).
 
-Purpur 1.1.1 uses Minecraft native settings dialogs and recognises the matching icon pack provided by server.properties. See [Purpur installation](purpur/README.md).
-
-Purpur requires the icon pack for all players and does not offer player switches for gamemode or trophy icons. Rank numbers and podium colors retain their own controls.
+`/join-queue ` completes currently open queues. DiaVanilla uses its supplied dedicated icon. This repository and its releases contain the client mod.
