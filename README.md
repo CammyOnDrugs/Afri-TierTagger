@@ -55,8 +55,11 @@ This repository contains client source, build files, tests and public artwork on
 
 Derived from Tier Tagger; original copyright and MPL-2.0 terms are preserved in [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
+Copyright (c) 2026 Brianni_MC (Afri-Tiers) for Afri-Tiers modifications and original contributions. See [COPYRIGHT](COPYRIGHT) for attribution and third-party ownership.
+
 ## Latest release
 
 [Download 2.7.1](https://github.com/CammyOnDrugs/Afri-TierTagger/releases/tag/v2.7.1) for your exact Minecraft version. The release includes all six client JARs, a combined download, mod-only source, changelog and SHA-256 checksums. See [release notes](RELEASE-NOTES.md) and the [client changelog](CHANGELOG.md).
 
 `/join-queue ` completes currently open queues. DiaVanilla uses its supplied dedicated icon. This repository and its releases contain the client mod.
+
