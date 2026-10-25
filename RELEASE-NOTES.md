@@ -21,3 +21,7 @@ Fabric client mod for Minecraft 1.21.11, 26.1, 26.1.1, 26.1.2, 26.2 and 26.3. In
 The 26.x versions do not require Ukulib. Replace the old Afri-TiersTagger JAR and restart Minecraft. Keep one Afri-TiersTagger JAR installed. Display settings remain available at `/afritiers-settings`; the Search Player setting opens the browser.
 
 Existing queue completion, linked-account joining, alerts, kit identification and independent rank display settings are retained. Queue joining requires support from the Minecraft server. This download contains the client mod and its source; server plugins are excluded.
+
+## Validation
+
+All six client versions passed 82 tests each and Minecraft startup/render checks. The in-game checks loaded and rendered both a premium website bust and the supplied cracked-player fallback. GitHub Actions build 40170380510 passed for all six versions.
