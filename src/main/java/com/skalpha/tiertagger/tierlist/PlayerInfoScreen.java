@@ -27,7 +27,7 @@ public class PlayerInfoScreen extends CloseableScreen {
         for(ButtonWidget button:PlayerSearchScreen.tabs(width,mode,id->client.setScreen(new PlayerInfoScreen(parent,info,id,0))))addDrawableChild(button);
         contentTop=PlayerSearchScreen.tabsEnd(width)+12;
         tiers=info.getSortedTiers().stream().filter(t->mode.equals("overall")||t.mode().id().equals(mode)).toList();visible=Math.max(1,(height-contentTop-80)/12);
-        addDrawableChild(ButtonWidget.builder(Text.literal("Back to rankings"),b->close()).dimensions(width/2-80,height-28,160,20).build());
+        addDrawableChild(ButtonWidget.builder(Text.literal("Back to rankings"),b->close()).dimensions(width/2-75,height-28,150,20).build());
         addDrawableChild(ButtonWidget.builder(Text.literal("<"),b->client.setScreen(new PlayerInfoScreen(parent,info,mode,page-1))).dimensions(16,height-28,35,20).build()).active=page>0;
         addDrawableChild(ButtonWidget.builder(Text.literal(">"),b->client.setScreen(new PlayerInfoScreen(parent,info,mode,page+1))).dimensions(55,height-28,35,20).build()).active=(page+1)*visible<tiers.size();
     }

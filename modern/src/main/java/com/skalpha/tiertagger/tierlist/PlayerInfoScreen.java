@@ -27,7 +27,7 @@ public class PlayerInfoScreen extends CloseableScreen {
         for(Button button:PlayerSearchScreen.tabs(width,mode,id->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,id,0))))addRenderableWidget(button);
         contentTop=PlayerSearchScreen.tabsEnd(width)+12;
         tiers=info.getSortedTiers().stream().filter(t->mode.equals("overall")||t.mode().id().equals(mode)).toList();visible=Math.max(1,(height-contentTop-80)/12);
-        addRenderableWidget(Button.builder(Component.literal("Back to rankings"),b->onClose()).bounds(width/2-80,height-28,160,20).build());
+        addRenderableWidget(Button.builder(Component.literal("Back to rankings"),b->onClose()).bounds(width/2-75,height-28,150,20).build());
         addRenderableWidget(Button.builder(Component.literal("<"),b->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,mode,page-1))).bounds(16,height-28,35,20).build()).active=page>0;
         addRenderableWidget(Button.builder(Component.literal(">"),b->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,mode,page+1))).bounds(55,height-28,35,20).build()).active=(page+1)*visible<tiers.size();
     }

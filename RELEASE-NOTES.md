@@ -1,13 +1,14 @@
-# Afri-TiersTagger 2.8.1
+# Afri-TiersTagger 2.8.2
 
 Fabric client mod for Minecraft 1.21.11, 26.1, 26.1.1, 26.1.2, 26.2 and 26.3. Install only the JAR matching your exact game version.
 
 ## New in this release
 
-- Player ranking buttons now include the same website bust as the full player profile.
-- Overall #1, #2 and #3 display gold, silver and bronze trophies in rankings and profiles.
-- Gamemode and trophy icons stay enabled, including with older saved settings. Rank numbers and podium colors retain their settings.
-- Premium accounts use their exact website Visage bust PNG; cracked/unknown accounts retain the supplied fallback.
+- Player ranking buttons now match the plugin's 310 × 20 GUI-pixel size instead of stretching across the screen.
+- Thumbnails fit inside the shorter buttons; the search controls align with the compact list.
+- The profile's Back to rankings button uses the plugin's 150 × 20 size.
+
+This update changes interface dimensions and spacing only.
 
 ## Installation
 

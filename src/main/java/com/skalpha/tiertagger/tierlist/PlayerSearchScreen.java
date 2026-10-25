@@ -20,7 +20,7 @@ public class PlayerSearchScreen extends CloseableScreen {
     private TextInputWidget textField;
     private List<PlayerInfo> rows=List.of();
     private String status="";
-    private int rowTop,pageSize;
+    private int rowTop,pageSize,rowLeft;
     private boolean loading;
     private record RowPortrait(PortraitTexture texture,int y){}
     private final java.util.List<RowPortrait> portraits=new java.util.ArrayList<>();
@@ -31,17 +31,18 @@ public class PlayerSearchScreen extends CloseableScreen {
         for(ButtonWidget button:tabs(width,mode,selected->show(selected,textField==null?query:textField.getText(),0)))addDrawableChild(button);
         int tabsEnd=tabsEnd(width);
         int inputY=tabsEnd+8;
-        textField=addSelectableChild(new TextInputWidget(16,inputY,Math.max(80,width-112),20,query,value->{},"Minecraft username",value->value.matches("[a-zA-Z0-9_]*"),16));
-        addDrawableChild(ButtonWidget.builder(Text.literal("Search"),b->show(mode,textField.getText(),0)).dimensions(width-88,inputY,72,20).build());
-        rows=Leaderboard.rows(TierCache.getPlayerCacheValues(),mode,query);rowTop=inputY+42;pageSize=Math.max(1,(height-rowTop-38)/36);
+        int rowWidth=Math.min(310,width-32);rowLeft=(width-rowWidth)/2;
+        textField=addSelectableChild(new TextInputWidget(rowLeft,inputY,Math.max(80,rowWidth-80),20,query,value->{},"Minecraft username",value->value.matches("[a-zA-Z0-9_]*"),16));
+        addDrawableChild(ButtonWidget.builder(Text.literal("Search"),b->show(mode,textField.getText(),0)).dimensions(rowLeft+rowWidth-72,inputY,72,20).build());
+        rows=Leaderboard.rows(TierCache.getPlayerCacheValues(),mode,query);rowTop=inputY+42;pageSize=Math.max(1,(height-rowTop-38)/22);
         int start=Math.min(page*pageSize,Math.max(0,rows.size()-1)),end=Math.min(rows.size(),start+pageSize);
         for(int i=start;i<end;i++){
             PlayerInfo profile=rows.get(i);Text label=Text.empty();
             if(mode.equals("overall")&&profile.overall()>=1&&profile.overall()<=3)label=label.copy().append(Text.literal(""+(char)(0xe900+profile.overall())+" ").formatted(net.minecraft.util.Formatting.WHITE));
             if(mode.equals("overall")&&profile.overall()>0)label=label.copy().append(Text.literal("#"+profile.overall()+" ").styled(style->style.withColor(Leaderboard.positionColor(profile.overall()))));
             label=label.copy().append(Text.literal(profile.name()+"  "+(mode.equals("overall")?profile.points()+" points":profile.rankings().get(mode).tierName()+(profile.rankings().get(mode).retired()?" (Retired)":""))));
-            addDrawableChild(ButtonWidget.builder(label,b->MinecraftClient.getInstance().setScreen(new PlayerInfoScreen(this,profile))).dimensions(16,rowTop+(i-start)*36,width-32,32).build());
-            portraits.add(new RowPortrait(new PortraitTexture(profile.portrait()),rowTop+(i-start)*36+2));
+            addDrawableChild(ButtonWidget.builder(label,b->MinecraftClient.getInstance().setScreen(new PlayerInfoScreen(this,profile))).dimensions(rowLeft,rowTop+(i-start)*22,rowWidth,20).build());
+            portraits.add(new RowPortrait(new PortraitTexture(profile.portrait()),rowTop+(i-start)*22+1));
         }
         addDrawableChild(ButtonWidget.builder(Text.literal("<"),b->show(mode,query,page-1)).dimensions(16,height-28,35,20).build()).active=page>0;
         addDrawableChild(ButtonWidget.builder(Text.literal(">"),b->show(mode,query,page+1)).dimensions(55,height-28,35,20).build()).active=(page+1)*pageSize<rows.size();
@@ -68,8 +69,8 @@ public class PlayerSearchScreen extends CloseableScreen {
     }
     public void render(DrawContext graphics,int mouseX,int mouseY,float delta){
         super.render(graphics,mouseX,mouseY,delta);graphics.drawCenteredTextWithShadow(textRenderer,title,width/2,8,0xFFFFFFFF);textField.render(graphics,mouseX,mouseY,delta);
-        graphics.drawTextWithShadow(textRenderer,GameMode.byId(mode).asStyled(true).copy().append(Text.literal(" - "+rows.size()+" players")),16,rowTop-14,0xFFFFFFFF);
-        for(RowPortrait row:portraits)row.texture().thumbnail(graphics,20,row.y(),28,28);
+        graphics.drawTextWithShadow(textRenderer,GameMode.byId(mode).asStyled(true).copy().append(Text.literal(" - "+rows.size()+" players")),rowLeft,rowTop-14,0xFFFFFFFF);
+        for(RowPortrait row:portraits)row.texture().thumbnail(graphics,rowLeft+4,row.y(),18,18);
         if(rows.isEmpty())graphics.drawCenteredTextWithShadow(textRenderer,query.isBlank()?"Rankings are loading...":"No matching players in this mode.",width/2,rowTop+8,0xFFAAAAAA);
         if(!status.isEmpty())graphics.drawCenteredTextWithShadow(textRenderer,status,width/2,height-42,0xFFAAAAAA);
     }
