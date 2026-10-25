@@ -46,6 +46,6 @@ final class PortraitTexture implements AutoCloseable {
         double scale=Math.min((double)width/imageWidth,(double)height/imageHeight);int w=(int)(imageWidth*scale),h=(int)(imageHeight*scale);
         graphics.blit(RenderPipelines.GUI_TEXTURED,id,x+(width-w)/2,y+(height-h)/2,0,0,w,h,imageWidth,imageHeight,imageWidth,imageHeight);
     }
+    void thumbnail(GuiGraphics graphics,int x,int y,int width,int height){if(loaded)draw(graphics,x,y,width,height);}
     public void close(){closed=true;if(future!=null)future.cancel(true);if(loaded)Minecraft.getInstance().getTextureManager().release(id);}
 }
-

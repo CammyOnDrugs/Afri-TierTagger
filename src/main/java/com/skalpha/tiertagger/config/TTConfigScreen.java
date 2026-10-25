@@ -134,10 +134,6 @@ public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
             var1.setHighestMode(var1x);
             TierTagger.invalidateTierComponentCache();
          }, SimpleOption.constantTooltip(Text.translatable("tiertagger.config.highest.desc"))));
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.icons", var1.isShowIcons(), var1x -> {
-            var1.setShowIcons(var1x);
-            TierTagger.invalidateTierComponentCache();
-         }));
          var2.add(CyclingOption.ofBoolean("tiertagger.config.playerList", var1.isPlayerList(), var1::setPlayerList));
          var2.add(CyclingOption.ofBoolean("tiertagger.config.kitIdentifier", var1.isKitIdentifier(), enabled -> {
             var1.setKitIdentifier(enabled);
@@ -145,7 +141,6 @@ public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
             TierTagger.invalidateTierComponentCache();
          }));
          var2.add(CyclingOption.ofBoolean("tiertagger.config.rankNumbers", var1.isRankNumbers(), value -> { var1.setRankNumbers(value); TierTagger.invalidateTierComponentCache(); }));
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.rankTrophies", var1.isRankTrophies(), value -> { var1.setRankTrophies(value); TierTagger.invalidateTierComponentCache(); }));
          var2.add(CyclingOption.ofBoolean("tiertagger.config.podiumColors", var1.isPodiumColors(), value -> { var1.setPodiumColors(value); TierTagger.invalidateTierComponentCache(); }));
          var2.add(new ScreenOpenButton("tiertagger.config.search", PlayerSearchScreen::new));
          return var2.toArray(WidgetCreator[]::new);

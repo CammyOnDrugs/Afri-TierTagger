@@ -20,8 +20,8 @@ public class TierTaggerConfig implements Serializable {
    private boolean podiumColors = true;
    public boolean isRankNumbers() { return rankNumbers; }
    public void setRankNumbers(boolean value) { rankNumbers = value; }
-   public boolean isRankTrophies() { return rankTrophies; }
-   public void setRankTrophies(boolean value) { rankTrophies = value; }
+   public boolean isRankTrophies() { return true; }
+   public void setRankTrophies(boolean value) { rankTrophies = true; }
    public boolean isPodiumColors() { return podiumColors; }
    public void setPodiumColors(boolean value) { podiumColors = value; }
    private boolean playerList = true;
@@ -168,7 +168,7 @@ public class TierTaggerConfig implements Serializable {
    }
 
    public boolean isShowIcons() {
-      return this.showIcons;
+      return true;
    }
 
    public boolean isPlayerList() {
@@ -214,7 +214,7 @@ public class TierTaggerConfig implements Serializable {
    }
 
    public void setShowIcons(boolean var1) {
-      this.showIcons = var1;
+      this.showIcons = true;
    }
 
    public void setPlayerList(boolean var1) {

@@ -35,11 +35,9 @@ public final class TTConfigScreen extends CloseableScreen {
             button("Gamemode: "+c.getGameMode().id(),width/2-150,y,300,() -> c.setGameMode(TierCache.findNextMode(c.getGameMode()).id())); y+=22;
             toggle("Show retired",y,c::isShowRetired,c::setShowRetired);y+=22;
             button("Highest tier: "+c.getHighestMode().getName(),width/2-150,y,300,() -> c.setHighestMode(TierTaggerConfig.HighestMode.values()[(c.getHighestMode().ordinal()+1)%3]));y+=22;
-            toggle("Gamemode icons",y,c::isShowIcons,c::setShowIcons);y+=22;
             toggle("Tab list",y,c::isPlayerList,c::setPlayerList);y+=22;
             toggle("Kit identifier",y,c::isKitIdentifier,v -> { c.setKitIdentifier(v); com.skalpha.tiertagger.kit.KitIdentifier.clear(); });y+=22;
             toggle("Rank numbers",y,c::isRankNumbers,c::setRankNumbers);y+=22;
-            toggle("Rank trophies",y,c::isRankTrophies,c::setRankTrophies);y+=22;
             toggle("Podium colors",y,c::isPodiumColors,c::setPodiumColors);y+=22;
             button("Search player",width/2-150,y,300,() -> Minecraft.getInstance().setScreen(new PlayerSearchScreen(this)));
         } else if(page==2) {

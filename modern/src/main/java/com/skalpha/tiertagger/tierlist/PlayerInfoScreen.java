@@ -37,7 +37,9 @@ public class PlayerInfoScreen extends CloseableScreen {
         portrait.draw(graphics,16,contentTop,Math.max(64,width/2-30),Math.max(32,height-contentTop-40));
         int x=width/2+4;
         graphics.drawString(font,info.region()+" - "+info.points()+" points",x,contentTop,0xFFFFFFFF);
-        graphics.drawString(font,info.overall()>0?"Overall #"+info.overall():"Unranked",x,contentTop+14,0xFF000000|Leaderboard.positionColor(info.overall()));
+        Component placement=Component.empty();if(info.overall()>=1&&info.overall()<=3)placement=placement.copy().append(Component.literal(""+(char)(0xe900+info.overall())+" ").withStyle(net.minecraft.ChatFormatting.WHITE));
+        placement=placement.copy().append(Component.literal(info.overall()>0?"Overall #"+info.overall():"Unranked").withStyle(style->style.withColor(Leaderboard.positionColor(info.overall()))));
+        graphics.drawString(font,placement,x,contentTop+14,0xFFFFFFFF);
         int start=page*visible,end=Math.min(tiers.size(),start+visible);
         for(int i=start;i<end;i++){var tier=tiers.get(i);graphics.drawString(font,formatTier(tier.mode(),tier.ranking()),x,contentTop+34+(i-start)*12,0xFFFFFFFF);}
         if(tiers.isEmpty())graphics.drawString(font,"No tier in this mode",x,contentTop+34,0xFFAAAAAA);

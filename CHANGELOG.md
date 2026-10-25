@@ -1,6 +1,15 @@
 # Afri-TiersTagger client changelog
 
-Changes added during the Afri-Tiers customization of the original Tier Tagger mod, through version 2.8.0. The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. Earlier customization is grouped where a separate release number was not recorded.
+Changes added during the Afri-Tiers customization of the original Tier Tagger mod, through version 2.8.1. The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. Earlier customization is grouped where a separate release number was not recorded.
+
+## 2.8.1 — Ranking portraits and required icons
+
+- Added the website's half-body bust thumbnails inside clickable player ranking buttons.
+- Added untinted gold, silver and bronze trophy icons to overall #1, #2 and #3 in rankings and profile summaries.
+- Kept the full website bust in player profiles, with the supplied fallback for cracked accounts.
+- Made gamemode and trophy icons always enabled, including when loading older settings with icons disabled. Rank number and podium color preferences remain available.
+- Removed icon-disable controls from both client settings screens.
+- Release downloads contain only the mod and its source.
 
 ## 2.8.0 — In-game rankings and website portraits
 
