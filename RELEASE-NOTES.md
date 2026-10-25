@@ -1,14 +1,13 @@
-# Afri-TiersTagger 2.8.2
+# Afri-TiersTagger 2.8.3
 
 Fabric client mod for Minecraft 1.21.11, 26.1, 26.1.1, 26.1.2, 26.2 and 26.3. Install only the JAR matching your exact game version.
 
 ## New in this release
 
-- Player ranking buttons now match the plugin's 310 × 20 GUI-pixel size instead of stretching across the screen.
-- Thumbnails fit inside the shorter buttons; the search controls align with the compact list.
-- The profile's Back to rankings button uses the plugin's 150 × 20 size.
+- Profile portraits use a maximum 96 × 96 GUI-pixel box matching the plugin, instead of expanding across half the screen.
+- Portraits and player stats sit together in a compact centered profile area.
 
-This update changes interface dimensions and spacing only.
+The existing compact ranking buttons, tabs, portraits, tier colors and commands are retained.
 
 ## Installation
 

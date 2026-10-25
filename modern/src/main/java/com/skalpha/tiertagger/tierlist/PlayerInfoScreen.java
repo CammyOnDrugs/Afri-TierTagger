@@ -18,7 +18,7 @@ public class PlayerInfoScreen extends CloseableScreen {
     private final int page;
     private PortraitTexture portrait;
     private List<PlayerInfo.NamedRanking> tiers=List.of();
-    private int contentTop,visible;
+    private int contentTop,visible,portraitSize,profileLeft;
     public PlayerInfoScreen(Screen parent,PlayerInfo info){this(parent,info,"overall",0);}
     public PlayerInfoScreen(Screen parent,PlayerInfo info,PlayerSkinWidget unused){this(parent,info);}
     private PlayerInfoScreen(Screen parent,PlayerInfo info,String mode,int page){super("Player Profile",parent);this.info=info;this.mode=mode;this.page=Math.max(0,page);}
@@ -26,6 +26,8 @@ public class PlayerInfoScreen extends CloseableScreen {
         if(portrait==null)portrait=new PortraitTexture(info.portrait());
         for(Button button:PlayerSearchScreen.tabs(width,mode,id->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,id,0))))addRenderableWidget(button);
         contentTop=PlayerSearchScreen.tabsEnd(width)+12;
+        portraitSize=Math.min(96,Math.max(32,height-contentTop-40));
+        profileLeft=(width-Math.min(310,width-32))/2;
         tiers=info.getSortedTiers().stream().filter(t->mode.equals("overall")||t.mode().id().equals(mode)).toList();visible=Math.max(1,(height-contentTop-80)/12);
         addRenderableWidget(Button.builder(Component.literal("Back to rankings"),b->onClose()).bounds(width/2-75,height-28,150,20).build());
         addRenderableWidget(Button.builder(Component.literal("<"),b->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,mode,page-1))).bounds(16,height-28,35,20).build()).active=page>0;
@@ -34,8 +36,8 @@ public class PlayerInfoScreen extends CloseableScreen {
     private Component formatTier(GameMode mode,PlayerInfo.Ranking ranking){return Component.empty().append(mode.asStyled(true)).append(Component.literal(": ").withStyle(ChatFormatting.GRAY)).append(TierTagger.getRankingText(ranking,false));}
     public void render(GuiGraphics graphics,int mouseX,int mouseY,float delta){
         super.render(graphics,mouseX,mouseY,delta);graphics.drawCenteredString(font,info.name()+"'s profile",width/2,8,0xFFFFFFFF);
-        portrait.draw(graphics,16,contentTop,Math.max(64,width/2-30),Math.max(32,height-contentTop-40));
-        int x=width/2+4;
+        portrait.draw(graphics,profileLeft,contentTop,portraitSize,portraitSize);
+        int x=profileLeft+112;
         graphics.drawString(font,info.region()+" - "+info.points()+" points",x,contentTop,0xFFFFFFFF);
         Component placement=Component.empty();if(info.overall()>=1&&info.overall()<=3)placement=placement.copy().append(Component.literal(""+(char)(0xe900+info.overall())+" ").withStyle(net.minecraft.ChatFormatting.WHITE));
         placement=placement.copy().append(Component.literal(info.overall()>0?"Overall #"+info.overall():"Unranked").withStyle(style->style.withColor(Leaderboard.positionColor(info.overall()))));

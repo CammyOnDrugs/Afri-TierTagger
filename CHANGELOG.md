@@ -1,6 +1,11 @@
 # Afri-TiersTagger client changelog
 
-Changes added during the Afri-Tiers customization of the original Tier Tagger mod, through version 2.8.2. The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. Earlier customization is grouped where a separate release number was not recorded.
+Changes added during the Afri-Tiers customization of the original Tier Tagger mod, through version 2.8.3. The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. Earlier customization is grouped where a separate release number was not recorded.
+
+## 2.8.3 — Smaller profile portraits
+
+- Capped the profile bust at the plugin's 96 × 96 GUI-pixel size instead of enlarging it with the window.
+- Centered the portrait and stats together in a compact profile area.
 
 ## 2.8.2 — Compact ranking buttons
 
