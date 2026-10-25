@@ -11,9 +11,9 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSIONS = ['1.21.11', '26.1', '26.1.1', '26.1.2', '26.2', '26.3']
-BUILD_COMMIT = '4babca865894d8cd980245c6daa7653659d837ff'
-BUILD_RUN = 40170380510
-TAG = 'v2.8.0'
+BUILD_COMMIT = 'a2b15ea38f1c861035550d40a031491b015fb916'
+BUILD_RUN = 40178936454
+TAG = 'v2.8.1'
 
 
 def digest(path):
@@ -35,7 +35,7 @@ def prepare():
     out.mkdir(exist_ok=True)
     jars = []
     for version in VERSIONS:
-        name = f'Afri-TiersTagger-2.8.0+mc{version}.jar'
+        name = f'Afri-TiersTagger-2.8.1+mc{version}.jar'
         matches = list((ROOT / 'release-builds').rglob(name))
         if len(matches) != 1:
             raise RuntimeError(f'Expected exactly one tested client artifact: {name}')
@@ -43,7 +43,7 @@ def prepare():
         shutil.copyfile(matches[0], dest)
         with zipfile.ZipFile(dest) as jar:
             metadata = json.loads(jar.read('fabric.mod.json'))
-            if metadata['version'] != f'2.8.0+mc{version}':
+            if metadata['version'] != f'2.8.1+mc{version}':
                 raise RuntimeError('Wrong client version in ' + name)
             if jar.testzip() is not None:
                 raise RuntimeError('Corrupt client artifact: ' + name)
@@ -51,20 +51,20 @@ def prepare():
     common = ['RELEASE-NOTES.md', 'CHANGELOG.md', 'LICENSE', 'NOTICE', 'COPYRIGHT']
     for name in ['RELEASE-NOTES.md', 'CHANGELOG.md']:
         shutil.copyfile(ROOT / name, out / name)
-    with zipfile.ZipFile(out / 'AfriTiers-2.8.0-client-source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(out / 'AfriTiers-2.8.1-client-source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for path in paths:
             archive.write(ROOT / path, path)
-    with zipfile.ZipFile(out / 'AfriTiers-2.8.0-Minecraft-1.21.11-to-26.3.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(out / 'AfriTiers-2.8.1-Minecraft-1.21.11-to-26.3.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for path in jars:
             archive.write(path, path.name)
         for name in common:
             archive.write(ROOT / name, name)
     assets = jars + [out / name for name in [
-        'AfriTiers-2.8.0-client-source.zip',
-        'AfriTiers-2.8.0-Minecraft-1.21.11-to-26.3.zip', 'RELEASE-NOTES.md', 'CHANGELOG.md']]
+        'AfriTiers-2.8.1-client-source.zip',
+        'AfriTiers-2.8.1-Minecraft-1.21.11-to-26.3.zip', 'RELEASE-NOTES.md', 'CHANGELOG.md']]
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip()
     manifest = {
-        'version': '2.8.0', 'minecraftVersions': VERSIONS, 'sourceCommit': head,
+        'version': '2.8.1', 'minecraftVersions': VERSIONS, 'sourceCommit': head,
         'testedBuildCommit': BUILD_COMMIT, 'testedBuildRun': BUILD_RUN,
         'pluginsIncluded': False,
         'files': [{'file': path.name, 'sha256': digest(path), 'bytes': path.stat().st_size}
@@ -104,7 +104,7 @@ def publish(assets, head):
             raise
         release = request(f'{base}/releases', 'POST', {
             'tag_name': TAG, 'target_commitish': head,
-            'name': 'Afri-TiersTagger 2.8.0 | Minecraft 1.21.11 - 26.3',
+            'name': 'Afri-TiersTagger 2.8.1 | Minecraft 1.21.11 - 26.3',
             'body': body, 'draft': True, 'prerelease': False})
     if not release['draft']:
         raise RuntimeError('Release is already published; refusing to replace its assets')
