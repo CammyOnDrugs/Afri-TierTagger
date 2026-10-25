@@ -1,4 +1,4 @@
-name: Publish mod 2.8.1
+name: Publish mod 2.8.2
 on:
   push:
     branches: [main]
@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: publish-mod-2.8.1
+  group: publish-mod-2.8.2
   cancel-in-progress: false
 jobs:
   publish:
@@ -25,7 +25,7 @@ jobs:
           pattern: Afri-TiersTagger-mc*
           path: release-builds
           github-token: ${{ github.token }}
-          run-id: 40178936454
+          run-id: 40188968682
       - name: Verify and publish mod-only release
         env:
           GH_TOKEN: ${{ github.token }}

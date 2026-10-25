@@ -11,7 +11,7 @@ Displays Afri-Tiers rankings beside player names, with the existing tier colours
 | 1.21.11 | Repository root | 21 | Fabric API for 1.21.11, Ukulib 1.10.2 |
 | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | [modern](modern/) | 25 | Fabric API for the exact Minecraft release |
 
-Version **2.8.1** adds bust thumbnails to ranking buttons and top-three trophies to rankings and profile summaries. Gamemode and trophy icons stay enabled. Overall rank numbers and gold/silver/bronze podium colors retain their switches. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
+Version **2.8.2** matches the ranking button dimensions to the plugin, using centered 310 × 20 rows. Website bust thumbnails and top-three trophies remain in rankings and profile summaries. Gamemode and trophy icons stay enabled. Overall rank numbers and gold/silver/bronze podium colors retain their switches. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
 
 Open the client settings screen with **`/afritiers-settings`**.
 
@@ -59,7 +59,7 @@ Copyright (c) 2026 Brianni_MC (Afri-Tiers) for Afri-Tiers modifications and orig
 
 ## Latest release
 
-[Download 2.8.1](https://github.com/CammyOnDrugs/Afri-TierTagger/releases/tag/v2.8.1) for your exact Minecraft version. The release includes all six client JARs, a combined download, mod-only source, changelog and SHA-256 checksums. See [release notes](RELEASE-NOTES.md) and the [client changelog](CHANGELOG.md).
+[Download 2.8.2](https://github.com/CammyOnDrugs/Afri-TierTagger/releases/tag/v2.8.2) for your exact Minecraft version. The release includes all six client JARs, a combined download, mod-only source, changelog and SHA-256 checksums. See [release notes](RELEASE-NOTES.md) and the [client changelog](CHANGELOG.md).
 
 `/join-queue ` completes currently open queues. DiaVanilla uses its supplied dedicated icon. This repository and its releases contain the client mod.
 
