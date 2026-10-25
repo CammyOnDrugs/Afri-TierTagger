@@ -1,94 +1,70 @@
 package com.skalpha.tiertagger.tierlist;
 
-import com.mojang.authlib.GameProfile;
 import com.skalpha.tiertagger.TierCache;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
+import com.skalpha.tiertagger.TierTagger;
+import com.skalpha.tiertagger.model.GameMode;
+import com.skalpha.tiertagger.model.PlayerInfo;
+import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.PlayerSkinWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.entity.player.SkinTextures;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.ApiServices;
 import net.uku3lig.ukulib.config.option.widget.TextInputWidget;
 import net.uku3lig.ukulib.config.screen.CloseableScreen;
-import net.uku3lig.ukulib.utils.Ukutils;
-import org.jetbrains.annotations.NotNull;
 
 public class PlayerSearchScreen extends CloseableScreen {
-   private TextInputWidget textField;
-   private ButtonWidget searchButton;
-   private boolean searching = false;
-   private CompletableFuture<?> future = null;
-
-   public PlayerSearchScreen(Screen parent) {
-      super("Player Search", parent);
-   }
-
-   protected void init() {
-      String username = I18n.translate("tiertagger.search.user", new Object[0]);
-      this.textField = (TextInputWidget)this.addSelectableChild(
-         new TextInputWidget(this.width / 2 - 100, 116, 200, 20, "", s -> {}, username, s -> s.matches("[a-zA-Z0-9_-]+"), 32)
-      );
-      this.searchButton = (ButtonWidget)this.addDrawableChild(
-         ButtonWidget.builder(Text.translatable("tiertagger.search"), button -> this.loadAndShowProfile())
-            .dimensions(this.width / 2 - 100, this.height / 4 + 96 + 12, 200, 20)
-            .build()
-      );
-      this.addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> {
-         if (this.future != null) {
-            this.future.cancel(true);
-         }
-
-         this.close();
-      }).dimensions(this.width / 2 - 100, this.height / 4 + 120 + 12, 200, 20).build());
-      this.setInitialFocus(this.textField);
-   }
-
-   public void tick() {
-      super.tick();
-      this.searchButton.active = this.textField.isValid() && !this.searching;
-   }
-
-   private void loadAndShowProfile() {
-      String username = this.textField.getText();
-      this.searching = true;
-      this.searchButton.setMessage(Text.translatable("tiertagger.search.loading"));
-      ApiServices services = MinecraftClient.getInstance().getApiServices();
-      CompletableFuture<PlayerSkinWidget> skinFuture = CompletableFuture.supplyAsync(() -> {
-         GameProfile profile = services.profileResolver().getProfileByName(username).orElseGet(() -> new GameProfile(UUID.randomUUID(), username));
-         Supplier<SkinTextures> skinSupplier = MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(profile, true);
-         PlayerSkinWidget skin = new PlayerSkinWidget(60, 144, MinecraftClient.getInstance().getLoadedEntityModels(), skinSupplier);
-         skin.setPosition(this.width / 2 - 65, (this.height - 144) / 2);
-         return skin;
-      });
-      this.future = TierCache.searchPlayer(username)
-         .thenCombine(skinFuture, (info, skin) -> new PlayerInfoScreen(this, info, skin))
-         .thenAccept(screen -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(screen)))
-         .whenComplete((v, t) -> {
-            if (t != null) {
-               Ukutils.sendToast(Text.translatable("tiertagger.search.unknown"), null);
-            }
-
-            this.searching = false;
-            this.searchButton.setMessage(Text.translatable("tiertagger.search"));
-         });
-   }
-
-   public void resize(int width, int height) {
-      String string = this.textField.getText();
-      this.init(width, height);
-      this.textField.setText(string);
-   }
-
-   public void render(@NotNull DrawContext graphics, int mouseX, int mouseY, float delta) {
-      super.render(graphics, mouseX, mouseY, delta);
-      graphics.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
-      this.textField.render(graphics, mouseX, mouseY, delta);
-   }
+    private final String mode,query;
+    private final int page;
+    private TextInputWidget textField;
+    private List<PlayerInfo> rows=List.of();
+    private String status="";
+    private int rowTop,pageSize;
+    private boolean loading;
+    public PlayerSearchScreen(Screen parent){this(parent,"overall","",0);}
+    public PlayerSearchScreen(Screen parent,String mode,String query,int page){super("Afri-Tiers Rankings",parent);this.mode=mode;this.query=query;this.page=Math.max(0,page);}
+    protected void init(){
+        for(ButtonWidget button:tabs(width,mode,selected->show(selected,textField==null?query:textField.getText(),0)))addDrawableChild(button);
+        int tabsEnd=tabsEnd(width);
+        int inputY=tabsEnd+8;
+        textField=addSelectableChild(new TextInputWidget(16,inputY,Math.max(80,width-112),20,query,value->{},"Minecraft username",value->value.matches("[a-zA-Z0-9_]*"),16));
+        addDrawableChild(ButtonWidget.builder(Text.literal("Search"),b->show(mode,textField.getText(),0)).dimensions(width-88,inputY,72,20).build());
+        rows=Leaderboard.rows(TierCache.getPlayerCacheValues(),mode,query);rowTop=inputY+42;pageSize=Math.max(1,(height-rowTop-38)/23);
+        int start=Math.min(page*pageSize,Math.max(0,rows.size()-1)),end=Math.min(rows.size(),start+pageSize);
+        for(int i=start;i<end;i++){
+            PlayerInfo profile=rows.get(i);Text label=Text.empty();
+            if(mode.equals("overall")&&profile.overall()>0)label=label.copy().append(Text.literal("#"+profile.overall()+" ").styled(style->style.withColor(Leaderboard.positionColor(profile.overall()))));
+            label=label.copy().append(Text.literal(profile.name()+"  "+(mode.equals("overall")?profile.points()+" points":profile.rankings().get(mode).tierName()+(profile.rankings().get(mode).retired()?" (Retired)":""))));
+            addDrawableChild(ButtonWidget.builder(label,b->MinecraftClient.getInstance().setScreen(new PlayerInfoScreen(this,profile))).dimensions(16,rowTop+(i-start)*23,width-32,20).build());
+        }
+        addDrawableChild(ButtonWidget.builder(Text.literal("<"),b->show(mode,query,page-1)).dimensions(16,height-28,35,20).build()).active=page>0;
+        addDrawableChild(ButtonWidget.builder(Text.literal(">"),b->show(mode,query,page+1)).dimensions(55,height-28,35,20).build()).active=(page+1)*pageSize<rows.size();
+        addDrawableChild(ButtonWidget.builder(Text.literal("Refresh"),b->refresh()).dimensions(width/2-36,height-28,72,20).build());
+        addDrawableChild(ButtonWidget.builder(Text.literal("Done"),b->close()).dimensions(width-88,height-28,72,20).build());
+        setInitialFocus(textField);
+        if(TierCache.getPlayerCacheValues().isEmpty()&&!loading)refresh();
+    }
+    private void show(String selected,String filter,int index){MinecraftClient.getInstance().setScreen(new PlayerSearchScreen(parent,selected,filter,index));}
+    private void refresh(){
+        if(loading)return;loading=true;status="Refreshing...";
+        TierCache.reload().whenComplete((list,error)->MinecraftClient.getInstance().execute(()->{loading=false;if(MinecraftClient.getInstance().currentScreen!=this)return;if(error!=null||list==null||list.isEmpty()){status="Could not refresh; showing cached rankings.";return;}show(mode,textField.getText(),0);}));
+    }
+    static int tabsEnd(int width){int columns=Math.max(4,Math.min(9,(width-24)/44));return 28+((Leaderboard.MODES.size()+columns-1)/columns)*22;}
+    static List<ButtonWidget> tabs(int width,String selected,java.util.function.Consumer<String> choose){
+        java.util.ArrayList<ButtonWidget> result=new java.util.ArrayList<>();int columns=Math.max(4,Math.min(9,(width-24)/44)),size=Math.min(60,(width-24)/columns);
+        for(int i=0;i<Leaderboard.MODES.size();i++){
+            String id=Leaderboard.MODES.get(i);GameMode mode=GameMode.byId(id);
+            Text label=id.equals("overall")?Text.literal("Overall"):Text.literal(mode.icon().map(Object::toString).orElse(id));
+            ButtonWidget button=ButtonWidget.builder(label,b->choose.accept(id)).dimensions((width-columns*size)/2+(i%columns)*size,26+(i/columns)*22,size-2,20).build();
+            button.setTooltip(Tooltip.of(mode.asStyled(false)));button.active=!id.equals(selected);result.add(button);
+        }
+        return result;
+    }
+    public void render(DrawContext graphics,int mouseX,int mouseY,float delta){
+        super.render(graphics,mouseX,mouseY,delta);graphics.drawCenteredTextWithShadow(textRenderer,title,width/2,8,0xFFFFFFFF);textField.render(graphics,mouseX,mouseY,delta);
+        graphics.drawTextWithShadow(textRenderer,GameMode.byId(mode).asStyled(true).copy().append(Text.literal(" - "+rows.size()+" players")),16,rowTop-14,0xFFFFFFFF);
+        if(rows.isEmpty())graphics.drawCenteredTextWithShadow(textRenderer,query.isBlank()?"Rankings are loading...":"No matching players in this mode.",width/2,rowTop+8,0xFFAAAAAA);
+        if(!status.isEmpty())graphics.drawCenteredTextWithShadow(textRenderer,status,width/2,height-42,0xFFAAAAAA);
+    }
 }

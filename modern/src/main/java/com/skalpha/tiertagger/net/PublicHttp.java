@@ -19,19 +19,29 @@ public final class PublicHttp {
         return info -> new LimitedBody(maxBytes, Duration.ofSeconds(12));
     }
 
-    static final class LimitedBody implements HttpResponse.BodySubscriber<String> {
+    public static HttpResponse.BodyHandler<byte[]> limitedBytes(int maxBytes) {
+        return info -> new LimitedData<>(maxBytes,Duration.ofSeconds(12),value->value);
+    }
+
+    static final class LimitedBody extends LimitedData<String> {
+        LimitedBody(int maxBytes,Duration deadline){super(maxBytes,deadline,value->new String(value,StandardCharsets.UTF_8));}
+    }
+
+    static class LimitedData<T> implements HttpResponse.BodySubscriber<T> {
         private final int maxBytes;
         private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        private final CompletableFuture<String> body = new CompletableFuture<>();
+        private final CompletableFuture<T> body = new CompletableFuture<>();
+        private final java.util.function.Function<byte[],T> convert;
         private Flow.Subscription subscription;
 
-        LimitedBody(int maxBytes, Duration deadline) {
+        LimitedData(int maxBytes, Duration deadline,java.util.function.Function<byte[],T> convert) {
             this.maxBytes = maxBytes;
+            this.convert=convert;
             CompletableFuture.delayedExecutor(deadline.toMillis(), TimeUnit.MILLISECONDS)
                 .execute(() -> fail(new java.net.http.HttpTimeoutException("Public response body timed out")));
         }
 
-        public CompletionStage<String> getBody() { return body; }
+        public CompletionStage<T> getBody() { return body; }
 
         public synchronized void onSubscribe(Flow.Subscription incoming) {
             if (subscription != null || body.isDone()) { incoming.cancel(); return; }
@@ -56,7 +66,7 @@ public final class PublicHttp {
         public void onError(Throwable error) { fail(error); }
 
         public synchronized void onComplete() {
-            body.complete(bytes.toString(StandardCharsets.UTF_8));
+            body.complete(convert.apply(bytes.toByteArray()));
         }
 
         private synchronized void fail(Throwable error) {

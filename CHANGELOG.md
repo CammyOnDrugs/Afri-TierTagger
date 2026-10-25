@@ -1,6 +1,16 @@
 # Afri-TiersTagger client changelog
 
-Changes added during the Afri-Tiers customization of the original Tier Tagger mod, through version 2.7.1. The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. Earlier customization is grouped where a separate release number was not recorded.
+Changes added during the Afri-Tiers customization of the original Tier Tagger mod, through version 2.8.0. The original mod already provided tier labels, nametag/tab display, player search and a settings foundation. Earlier customization is grouped where a separate release number was not recorded.
+
+## 2.8.0 — In-game rankings and website portraits
+
+- Added an in-game rankings browser with Overall and all supported gamemode tabs, username search, paging and player profiles.
+- Added `/afritiers` and `/afritiers <username>` client commands. The existing Search Player setting opens the browser too.
+- Replaced the profile's locally resolved 3D player with the website's exact Visage bust PNG. Cracked and unknown accounts use the supplied website fallback image.
+- Kept Overall positions unchanged when switching modes, with tier-based ordering within a selected mode and active tiers ahead of retired tiers.
+- Kept profile gamemode rows free of repeated ranking numbers.
+- Added bounded asynchronous image downloads, dimension validation, a small expiring portrait cache and texture cleanup when closing a profile.
+- Added the Afri-Tiers copyright notice while preserving original MCTiers attribution and MPL-2.0 terms.
 
 ## 2.7.1 — Open-queue completion and DiaVanilla artwork
 

@@ -11,7 +11,7 @@ Displays Afri-Tiers rankings beside player names, with the existing tier colours
 | 1.21.11 | Repository root | 21 | Fabric API for 1.21.11, Ukulib 1.10.2 |
 | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | [modern](modern/) | 25 | Fabric API for the exact Minecraft release |
 
-Version **2.7.1** adds independent switches for overall rank numbers, rank trophy icons, and gold/silver/bronze podium colors. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
+Version **2.8.0** adds independent switches for overall rank numbers, rank trophy icons, and gold/silver/bronze podium colors. Turning podium colors off makes all numbers gray. Profile-search gamemode rows show tier information without placement numbers or trophies. Each Minecraft build declares its exact game version; choose one matching your client.
 
 Open the client settings screen with **`/afritiers-settings`**.
 
@@ -59,7 +59,13 @@ Copyright (c) 2026 Brianni_MC (Afri-Tiers) for Afri-Tiers modifications and orig
 
 ## Latest release
 
-[Download 2.7.1](https://github.com/CammyOnDrugs/Afri-TierTagger/releases/tag/v2.7.1) for your exact Minecraft version. The release includes all six client JARs, a combined download, mod-only source, changelog and SHA-256 checksums. See [release notes](RELEASE-NOTES.md) and the [client changelog](CHANGELOG.md).
+[Download 2.8.0](https://github.com/CammyOnDrugs/Afri-TierTagger/releases/tag/v2.8.0) for your exact Minecraft version. The release includes all six client JARs, a combined download, mod-only source, changelog and SHA-256 checksums. See [release notes](RELEASE-NOTES.md) and the [client changelog](CHANGELOG.md).
 
 `/join-queue ` completes currently open queues. DiaVanilla uses its supplied dedicated icon. This repository and its releases contain the client mod.
 
+
+## In-game rankings and profiles
+
+Use `/afritiers` to browse Overall rankings, choose gamemode tabs at the top, search Minecraft usernames and open player profiles. `/afritiers <username>` opens a cached matching profile directly. The settings Search Player button opens the same browser.
+
+Profile portraits use the same Visage bust URL as the website for premium accounts and the same supplied fallback PNG for cracked/unknown accounts. Images load asynchronously, fit their original aspect ratio and are cached briefly while browsing. Overall placement stays consistent across gamemodes; profile tier rows show tier information without repeated placement numbers.

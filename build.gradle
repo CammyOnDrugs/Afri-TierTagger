@@ -31,4 +31,4 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
 }
 test { useJUnitPlatform() }
-jar { from('LICENSE', 'NOTICE') }
+jar { from('LICENSE', 'NOTICE', 'COPYRIGHT') }

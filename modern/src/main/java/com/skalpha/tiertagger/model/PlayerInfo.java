@@ -31,15 +31,17 @@ public record PlayerInfo(
    int points,
    int overall,
    List<PlayerInfo.Badge> badges,
-   boolean combatMaster
+   boolean combatMaster,
+   String portrait
 ) {
+   public PlayerInfo(String uuid,String name,Map<String,Ranking> rankings,String region,int points,int overall,List<Badge> badges,boolean combatMaster){this(uuid,name,rankings,region,points,overall,badges,combatMaster,PortraitSource.FALLBACK);}
    private static final SecureRandom RANDOM = new SecureRandom();
 
    public static CompletableFuture<List<PlayerInfo>> fetchAll(HttpClient client, String baseUrl) {
       String url = "https://afritiers.co.za/api/players";
       HttpRequest request = HttpRequest.newBuilder(URI.create(url))
          .timeout(java.time.Duration.ofSeconds(15))
-         .header("User-Agent", "Afri-TiersTagger/2.7.1")
+         .header("User-Agent", "Afri-TiersTagger/2.8.0")
          .header("Cache-Control", "no-cache, no-store, must-revalidate")
          .header("Pragma", "no-cache")
          .GET()
@@ -78,7 +80,7 @@ public record PlayerInfo(
          PlayerInfo player = players.get(index);
          int position = positions.getOrDefault(player, 0);
          player.rankings().replaceAll((mode, previous) -> new Ranking(previous.tierName(), previous.tier(), previous.retired(), previous.points(), position));
-         players.set(index, new PlayerInfo(player.uuid(), player.name(), player.rankings(), player.region(), player.points(), position, player.badges(), player.combatMaster()));
+         players.set(index, new PlayerInfo(player.uuid(), player.name(), player.rankings(), player.region(), player.points(), position, player.badges(), player.combatMaster(),player.portrait()));
       }
    }
 
@@ -102,7 +104,7 @@ public record PlayerInfo(
          }
       }
 
-      return new PlayerInfo(uuid, name, rankings, region, totalPoints, 0, Collections.emptyList(), false);
+      return new PlayerInfo(uuid, name, rankings, region, totalPoints, 0, Collections.emptyList(), false,PortraitSource.forPlayer(obj));
    }
 
    public static Optional<PlayerInfo.NamedRanking> getHighestRanking(Map<String, PlayerInfo.Ranking> rankings) {

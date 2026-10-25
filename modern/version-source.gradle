@@ -28,6 +28,7 @@ def prepare = tasks.register('prepareVersionSources') {
     "graphics.drawString(": "graphics.text("
 ]
         if (project.minecraft_version in ['26.2', '26.3']) replacements.putAll([
+    "Minecraft.getInstance().screen": "Minecraft.getInstance().gui.screen()",
     "Minecraft.getInstance().setScreen(": "Minecraft.getInstance().gui.setScreen(",
     "client.setScreen(": "client.gui.setScreen(",
     "var0.setScreen(": "var0.gui.setScreen(",

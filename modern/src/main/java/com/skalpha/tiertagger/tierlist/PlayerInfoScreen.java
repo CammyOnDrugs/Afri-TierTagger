@@ -3,84 +3,44 @@ package com.skalpha.tiertagger.tierlist;
 import com.skalpha.tiertagger.TierTagger;
 import com.skalpha.tiertagger.model.GameMode;
 import com.skalpha.tiertagger.model.PlayerInfo;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
+import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PlayerSkinWidget;
-import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import com.skalpha.tiertagger.config.CloseableScreen;
-import org.jetbrains.annotations.NotNull;
 
 public class PlayerInfoScreen extends CloseableScreen {
-   private final PlayerInfo info;
-   private final PlayerSkinWidget skin;
-
-   public PlayerInfoScreen(Screen parent, PlayerInfo info, PlayerSkinWidget skin) {
-      super(Component.literal("Player Info"), parent);
-      this.info = info;
-      this.skin = skin;
-   }
-
-   protected void init() {
-      this.addRenderableWidget(
-         Button.builder(CommonComponents.GUI_DONE, b -> Minecraft.getInstance().setScreen(this.parent))
-            .bounds(this.width / 2 - 100, this.height - 27, 200, 20)
-            .build()
-      );
-      this.addRenderableWidget(this.skin);
-      int lineHeight = 9;
-      int rankingHeight = this.info.rankings().size() * lineHeight;
-      int infoHeight = 46;
-      int startY = (this.height - infoHeight - rankingHeight) / 2;
-      int rankingY = startY + infoHeight;
-
-      for (PlayerInfo.NamedRanking named : this.info.getSortedTiers()) {
-         if (named.mode() != null) {
-            StringWidget text = new StringWidget(this.formatTier(named.mode(), named.ranking()), this.font);
-            text.setX(this.width / 2 + 5);
-            text.setY(rankingY);
-            Component tooltip = Component.literal(named.ranking().retired() ? "Status: Retired" : "").withStyle(ChatFormatting.GRAY);
-            if (!tooltip.getString().isEmpty()) {
-               text.setTooltip(Tooltip.create(tooltip));
-            }
-
-            this.addRenderableWidget(text);
-            rankingY += lineHeight;
-         }
-      }
-   }
-
-   public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-      super.render(graphics, mouseX, mouseY, delta);
-      graphics.drawCenteredString(this.font, this.info.name() + "'s profile", this.width / 2, 20, -1);
-      int lineHeight = 9;
-      int rankingHeight = this.info.rankings().size() * lineHeight;
-      int infoHeight = 46;
-      int startY = (this.height - infoHeight - rankingHeight) / 2;
-      graphics.drawString(this.font, this.getRegionText(this.info), this.width / 2 + 5, startY, -1);
-      graphics.drawString(this.font, this.getPointsText(this.info), this.width / 2 + 5, startY + 15, -1);
-      graphics.drawString(this.font, "Rankings:", this.width / 2 + 5, startY + 30, -1);
-   }
-
-   private Component formatTier(@NotNull GameMode mode, PlayerInfo.Ranking ranking) {
-      Component tierText = TierTagger.getRankingText(ranking, false);
-      return Component.empty().append(mode.asStyled(true)).append(Component.literal(": ").withStyle(ChatFormatting.GRAY)).append(tierText);
-   }
-
-   private Component getRegionText(PlayerInfo info) {
-      return Component.empty().append(Component.literal("Region: ")).append(Component.literal(info.region()).withStyle(s -> s.withColor(info.getRegionColor())));
-   }
-
-   private Component getPointsText(PlayerInfo info) {
-      PlayerInfo.PointInfo pointInfo = info.getPointInfo();
-      return Component.empty()
-         .append(Component.literal("Points: "))
-         .append(Component.literal(info.points() + " ").withStyle(s -> s.withColor(pointInfo.getColor())))
-         .append(Component.literal("(" + pointInfo.getTitle() + ")").withStyle(s -> s.withColor(pointInfo.getAccentColor())));
-   }
+    private final PlayerInfo info;
+    private final String mode;
+    private final int page;
+    private PortraitTexture portrait;
+    private List<PlayerInfo.NamedRanking> tiers=List.of();
+    private int contentTop,visible;
+    public PlayerInfoScreen(Screen parent,PlayerInfo info){this(parent,info,"overall",0);}
+    public PlayerInfoScreen(Screen parent,PlayerInfo info,PlayerSkinWidget unused){this(parent,info);}
+    private PlayerInfoScreen(Screen parent,PlayerInfo info,String mode,int page){super("Player Profile",parent);this.info=info;this.mode=mode;this.page=Math.max(0,page);}
+    protected void init(){
+        if(portrait==null)portrait=new PortraitTexture(info.portrait());
+        for(Button button:PlayerSearchScreen.tabs(width,mode,id->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,id,0))))addRenderableWidget(button);
+        contentTop=PlayerSearchScreen.tabsEnd(width)+12;
+        tiers=info.getSortedTiers().stream().filter(t->mode.equals("overall")||t.mode().id().equals(mode)).toList();visible=Math.max(1,(height-contentTop-80)/12);
+        addRenderableWidget(Button.builder(Component.literal("Back to rankings"),b->onClose()).bounds(width/2-80,height-28,160,20).build());
+        addRenderableWidget(Button.builder(Component.literal("<"),b->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,mode,page-1))).bounds(16,height-28,35,20).build()).active=page>0;
+        addRenderableWidget(Button.builder(Component.literal(">"),b->net.minecraft.client.Minecraft.getInstance().setScreen(new PlayerInfoScreen(parent,info,mode,page+1))).bounds(55,height-28,35,20).build()).active=(page+1)*visible<tiers.size();
+    }
+    private Component formatTier(GameMode mode,PlayerInfo.Ranking ranking){return Component.empty().append(mode.asStyled(true)).append(Component.literal(": ").withStyle(ChatFormatting.GRAY)).append(TierTagger.getRankingText(ranking,false));}
+    public void render(GuiGraphics graphics,int mouseX,int mouseY,float delta){
+        super.render(graphics,mouseX,mouseY,delta);graphics.drawCenteredString(font,info.name()+"'s profile",width/2,8,0xFFFFFFFF);
+        portrait.draw(graphics,16,contentTop,Math.max(64,width/2-30),Math.max(32,height-contentTop-40));
+        int x=width/2+4;
+        graphics.drawString(font,info.region()+" - "+info.points()+" points",x,contentTop,0xFFFFFFFF);
+        graphics.drawString(font,info.overall()>0?"Overall #"+info.overall():"Unranked",x,contentTop+14,0xFF000000|Leaderboard.positionColor(info.overall()));
+        int start=page*visible,end=Math.min(tiers.size(),start+visible);
+        for(int i=start;i<end;i++){var tier=tiers.get(i);graphics.drawString(font,formatTier(tier.mode(),tier.ranking()),x,contentTop+34+(i-start)*12,0xFFFFFFFF);}
+        if(tiers.isEmpty())graphics.drawString(font,"No tier in this mode",x,contentTop+34,0xFFAAAAAA);
+    }
+    public void removed(){if(portrait!=null){portrait.close();portrait=null;}super.removed();}
 }

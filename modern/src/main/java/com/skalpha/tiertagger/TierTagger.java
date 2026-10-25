@@ -65,6 +65,7 @@ public class TierTagger implements ModInitializer {
       ClientCommandRegistrationCallback.EVENT
          .register(
             (ClientCommandRegistrationCallback)(var0, var1x) -> {
+               var0.register(ClientCommandManager.literal("afritiers").executes(context -> { Minecraft client=Minecraft.getInstance();client.execute(()->client.setScreen(new com.skalpha.tiertagger.tierlist.PlayerSearchScreen(client.screen)));return 1; }).then(ClientCommandManager.argument("username",com.mojang.brigadier.arguments.StringArgumentType.word()).executes(context -> { Minecraft client=Minecraft.getInstance();String name=com.mojang.brigadier.arguments.StringArgumentType.getString(context,"username");client.execute(()->{ var parent=client.screen;var found=TierCache.getPlayerCacheValues().stream().filter(p->p.name().equalsIgnoreCase(name)).findFirst();client.setScreen(found.isPresent()?new com.skalpha.tiertagger.tierlist.PlayerInfoScreen(parent,found.get()):new com.skalpha.tiertagger.tierlist.PlayerSearchScreen(parent,"overall",name,0)); });return 1; })));
                var0.register(ClientCommandManager.literal("afritiers-settings").executes(context -> { Minecraft client = Minecraft.getInstance(); client.execute(() -> client.setScreen(new TTConfigScreen(client.screen))); return 1; }));
                var0.register((LiteralArgumentBuilder)ClientCommandManager.literal("afritiersreload").executes(TierTagger::reloadTiers));
                var0.register(
