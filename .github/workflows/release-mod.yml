@@ -30,3 +30,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 tools/publish-mod-release.py
+
+# Refresh the inspected older 2.8.4 release with the latest tested assets.

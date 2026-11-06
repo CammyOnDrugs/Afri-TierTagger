@@ -91,7 +91,7 @@ def publish(assets, head):
             if not binary:
                 data = json.dumps(data).encode()
         with urllib.request.urlopen(urllib.request.Request(url, data=data, headers=headers, method=method), timeout=120) as response:
-            return json.load(response)
+            return None if response.status == 204 else json.load(response)
 
     build = request(f'{base}/actions/runs/{BUILD_RUN}')
     if build['head_sha'] != BUILD_COMMIT or build['conclusion'] != 'success':
@@ -106,12 +106,22 @@ def publish(assets, head):
             'tag_name': TAG, 'target_commitish': head,
             'name': 'Afri-TiersTagger 2.8.4 | Minecraft 1.21.11 - 26.3',
             'body': body, 'draft': True, 'prerelease': False})
-    if not release['draft']:
-        raise RuntimeError('Release is already published; refusing to replace its assets')
-    if release['target_commitish'] != head:
-        raise RuntimeError('Existing draft targets a different commit')
     existing = {entry['name']: entry for entry in request(release['assets_url'])}
     expected = {path.name for path in assets}
+    if not release['draft']:
+        # Replace only the exact older 2.8.4 release inspected and backed up.
+        old_name = 'AfriTiers-2.8.4-Minecraft-1.21.11-to-26.3.zip'
+        if release['id'] != 436898507 or set(existing) != {old_name} or existing[old_name].get('digest') != 'sha256:ef68fc6d434d3ae957a053d8425fce1fca385f940cb7ed2919761778e63ecf59':
+            raise RuntimeError('Existing release changed since backup; inspect before replacing')
+        tag = request(base + '/git/ref/tags/' + TAG)
+        if tag['object']['sha'] != '1361ca323f6c6a76de6f2a0453c16334b4fb6754':
+            raise RuntimeError('Existing release tag changed since inspection')
+        request(base + '/git/refs/tags/' + TAG, 'PATCH', {'sha': head, 'force': True})
+        request(existing[old_name]['url'], 'DELETE')
+        existing = {}
+        release = request(release['url'], 'PATCH', {'target_commitish': head, 'body': body})
+    elif release['target_commitish'] != head:
+        raise RuntimeError('Existing draft targets a different commit')
     if set(existing) - expected:
         raise RuntimeError('Unexpected files are present in the draft release')
     upload = release['upload_url'].split('{', 1)[0]
