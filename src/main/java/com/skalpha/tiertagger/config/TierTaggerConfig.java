@@ -30,10 +30,10 @@ public class TierTaggerConfig implements Serializable {
    public int tierlistPage = 0;
    private LinkedTreeMap<String, Integer> tierColors = defaultColors();
    private boolean kitIdentifier = false;
-   private boolean waitlistAlerts = true;
-   private boolean waitlistSound = true;
-   private boolean ticketAlerts = true;
-   private boolean ticketSound = true;
+   private boolean waitlistAlerts = false;
+   private boolean waitlistSound = false;
+   private boolean ticketAlerts = false;
+   private boolean ticketSound = false;
    private AlertLocation waitlistLocation = AlertLocation.TITLE;
    private AlertLocation ticketLocation = AlertLocation.TITLE;
 
