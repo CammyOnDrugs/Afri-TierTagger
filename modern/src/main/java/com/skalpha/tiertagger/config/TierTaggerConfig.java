@@ -9,7 +9,48 @@ import java.util.Optional;
 import java.util.Map.Entry;
 
 public class TierTaggerConfig implements Serializable {
+   public enum IconSet {
+      AfriTiers, PvPTiers, PvPHQ, Minecraft;
+      public String getName(){return name();}
+      public String getTranslationKey(){return "tiertagger.icons."+name();}
+   }
+   private IconSet iconSet=IconSet.AfriTiers;
+   public IconSet getIconSet(){return iconSet==null?IconSet.AfriTiers:iconSet;}
+   public void setIconSet(IconSet value){iconSet=value;GameMode.iconStyle=getIconSet().ordinal();com.skalpha.tiertagger.TierTagger.invalidateTierComponentCache();}
    private boolean enabled = true;
+   private boolean showPeakTiers=true, showMainTiers=true, showSubTiers=true, ownTierF5=true, nameTags=true, liquidGlass=true;
+   private int menuColor=0xF08A1D;
+   public boolean isShowPeakTiers(){return showPeakTiers;}
+   public void setShowPeakTiers(boolean value){showPeakTiers=value;}
+   public boolean isShowMainTiers(){return showMainTiers;}
+   public void setShowMainTiers(boolean value){showMainTiers=value;}
+   public boolean isShowSubTiers(){return showSubTiers;}
+   public void setShowSubTiers(boolean value){showSubTiers=value;}
+   public boolean isShowOwnTier(){return ownTierF5;}
+   public void setShowOwnTier(boolean value){ownTierF5=value;}
+   public boolean isNameTags(){return nameTags;}
+   public void setNameTags(boolean value){nameTags=value;}
+   public boolean isLiquidGlass(){return liquidGlass&&getIconSet()!=IconSet.Minecraft;}
+   public void setLiquidGlass(boolean value){liquidGlass=value;}
+   public int getMenuColor(){return menuColor&0xFFFFFF;}
+   public void setMenuColor(int value){menuColor=value&0xFFFFFF;}
+   public boolean allowsMode(String id){return java.util.Set.of("sword","axe","vanilla","uhc","diapot","nethpot","smp","mace","spear").contains(id)?showMainTiers:showSubTiers;}
+
+   private boolean darkTheme = true;
+   private boolean legacyMenu;
+   public boolean isLegacyMenu(){return legacyMenu;}
+   public void setLegacyMenu(boolean value){legacyMenu=value;}
+   private double menuScale=1.0;
+   private double menuOpacity=1.0;
+   private boolean menuAnimations=true;
+   public double getMenuScale(){return Math.max(0.8,Math.min(1.5,menuScale));}
+   public void setMenuScale(double value){menuScale=Math.max(0.8,Math.min(1.5,value));}
+   public double getMenuOpacity(){return Math.max(0.4,Math.min(1.0,menuOpacity));}
+   public void setMenuOpacity(double value){menuOpacity=Math.max(0.4,Math.min(1.0,value));}
+   public boolean isMenuAnimations(){return menuAnimations;}
+   public void setMenuAnimations(boolean value){menuAnimations=value;}
+   public boolean isDarkTheme(){return darkTheme;}
+   public void setDarkTheme(boolean value){darkTheme=value;}
    private String gameMode = "overall";
    private boolean showRetired = true;
    private TierTaggerConfig.HighestMode highestMode = TierTaggerConfig.HighestMode.NOT_FOUND;

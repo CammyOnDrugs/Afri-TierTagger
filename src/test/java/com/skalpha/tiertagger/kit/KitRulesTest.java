@@ -24,6 +24,11 @@ class KitRulesTest {
             .worn(KitSnapshot.Slot.FEET, material + "_boots");
     }
 
+    @Test void rocketAndHoleKits() {
+        assertEquals(Optional.of("rocketmace"),KitRules.infer(armor("netherite").item("mace",2).item("firework_rocket").build()));
+        assertEquals(Optional.of("holefight"),KitRules.infer(armor("diamond").item("diamond_sword",2).item("white_wool").item(KitRules.SPLASH_TURTLE).item("netherite_pickaxe").build()));
+        assertEquals(Optional.of("sword"),KitRules.infer(armor("diamond").item("diamond_sword",2).item("white_wool").item("netherite_pickaxe").build()));
+    }
     static Stream<Fixture> kits() {
         return Stream.of(
             new Fixture("sword", armor("diamond").item("diamond_sword").build()),
@@ -182,5 +187,10 @@ class KitRulesTest {
                 assertTrue(KitRules.infer(new KitSnapshot(true, changed, s.worn())).isEmpty(), item + " " + delta);
             }
         }
+    }
+    @Test
+    void mixedRocketAndHoleFightKitsDoNotOverrideAnotherSpecificKit(){
+        assertTrue(KitRules.infer(armor("netherite").item("mace",2).item("firework_rocket").item(KitRules.BED).build()).isEmpty());
+        assertTrue(KitRules.infer(armor("diamond").item("diamond_sword",2).item("white_wool").item(KitRules.SPLASH_TURTLE).item("netherite_pickaxe").item("crossbow").item("diamond_axe").build()).isEmpty());
     }
 }

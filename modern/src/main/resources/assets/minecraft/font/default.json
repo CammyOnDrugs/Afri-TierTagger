@@ -2,146 +2,11 @@
   "providers": [
     {
       "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_axe.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_mace.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_nethop.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_pot.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_smp.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_sword.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_uhc.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_vanilla.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_bed.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_creeper.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_dia_smp.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_cart.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_ogv.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_speed.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_spear.png",
-      "ascent": 8,
-      "height": 8,
-      "chars": [
-        ""
-      ]
-    },
-    {
-      "type": "bitmap",
       "file": "tier-tagger:afritiers/trophy-golden.png",
       "ascent": 8,
       "height": 9,
       "chars": [
-        ""
+        "􏾳"
       ]
     },
     {
@@ -150,7 +15,7 @@
       "ascent": 8,
       "height": 9,
       "chars": [
-        ""
+        "􏾴"
       ]
     },
     {
@@ -159,16 +24,655 @@
       "ascent": 8,
       "height": 9,
       "chars": [
-        ""
+        "􏾵"
       ]
     },
     {
       "type": "bitmap",
-      "file": "tier-tagger:afritiers/afritiers_diavanilla.png",
+      "file": "tier-tagger:iconsets/afritiers/sword.png",
       "ascent": 8,
       "height": 8,
       "chars": [
-        ""
+        "􏾶"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/axe.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾷"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/vanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾸"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/uhc.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾹"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/diapot.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾺"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/nethop.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾻"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾼"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/mace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾽"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/spear.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾾"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/diasmp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏾿"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/diavanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿀"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/cart.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿁"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/speed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿂"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/creeper.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿃"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/bed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿄"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/ogv.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿅"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/rocketmace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿆"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/afritiers/holefight.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿇"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/sword.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿈"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/axe.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿉"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/vanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿊"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/uhc.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿋"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/diapot.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿌"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/nethop.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿍"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿎"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/mace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿏"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/spear.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿐"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/diasmp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿑"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/diavanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿒"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/cart.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿓"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/speed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿔"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/creeper.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿕"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/bed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿖"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/ogv.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿗"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/rocketmace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿘"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvptiers/holefight.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿙"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/sword.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿚"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/axe.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿛"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/vanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿜"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/uhc.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿝"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/diapot.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿞"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/nethop.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿟"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿠"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/mace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿡"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/spear.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿢"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/diasmp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿣"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/diavanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿤"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/cart.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿥"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/speed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿦"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/creeper.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿧"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/bed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿨"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/ogv.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿩"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/rocketmace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿪"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/pvphq/holefight.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿫"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/sword.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿬"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/axe.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿭"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/vanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿮"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/uhc.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿯"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/diapot.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿰"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/nethop.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿱"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿲"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/mace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿳"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/spear.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿴"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/diasmp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿵"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/diavanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿶"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/cart.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿷"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/speed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿸"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/creeper.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿹"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/bed.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿺"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/ogv.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿻"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/rocketmace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿼"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "tier-tagger:iconsets/minecraft/holefight.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": [
+        "􏿽"
       ]
     }
   ]

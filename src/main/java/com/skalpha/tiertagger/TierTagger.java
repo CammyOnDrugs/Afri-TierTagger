@@ -61,6 +61,8 @@ public class TierTagger implements ModInitializer {
    private static final Text NULL_SENTINEL = Text.empty();
 
    public void onInitialize() {
+      GameMode.iconStyle=manager.getConfig().getIconSet().ordinal();
+      net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> com.skalpha.tiertagger.config.WalksySettings.tickColors());
       manager.saveConfig();
       CompletableFuture.runAsync(TierCache::init);
       com.skalpha.tiertagger.queue.QueueAlerts.init();
@@ -68,7 +70,7 @@ public class TierTagger implements ModInitializer {
          .register(
             (ClientCommandRegistrationCallback)(var0, var1x) -> {
                var0.register(ClientCommandManager.literal("afritiers").executes(context -> { MinecraftClient client=MinecraftClient.getInstance();client.execute(()->client.setScreen(new com.skalpha.tiertagger.tierlist.PlayerSearchScreen(client.currentScreen)));return 1; }).then(ClientCommandManager.argument("username",com.mojang.brigadier.arguments.StringArgumentType.word()).executes(context -> { MinecraftClient client=MinecraftClient.getInstance();String name=com.mojang.brigadier.arguments.StringArgumentType.getString(context,"username");client.execute(()->{ var parent=client.currentScreen;var found=TierCache.getPlayerCacheValues().stream().filter(p->p.name().equalsIgnoreCase(name)).findFirst();client.setScreen(found.isPresent()?new com.skalpha.tiertagger.tierlist.PlayerInfoScreen(parent,found.get()):new com.skalpha.tiertagger.tierlist.PlayerSearchScreen(parent,"overall",name,0)); });return 1; })));
-               var0.register(ClientCommandManager.literal("afritiers-settings").executes(context -> { MinecraftClient client = MinecraftClient.getInstance(); client.execute(() -> client.setScreen(new TTConfigScreen(client.currentScreen))); return 1; }));
+               var0.register(ClientCommandManager.literal("afritiers-settings").executes(context -> { MinecraftClient client = MinecraftClient.getInstance(); client.execute(() -> client.setScreen(TTConfigScreen.create(client.currentScreen))); return 1; }));
                var0.register((LiteralArgumentBuilder)ClientCommandManager.literal("afritiersreload").executes(TierTagger::reloadTiers));
                var0.register(
                   (LiteralArgumentBuilder)((LiteralArgumentBuilder)ClientCommandManager.literal("tiertagger")
@@ -88,7 +90,7 @@ public class TierTagger implements ModInitializer {
       });
       Ukutils.registerKeybinding(new KeyBinding("tiertagger.keybind.config", 45, var1), var0 -> MinecraftClient.getInstance().execute(() -> {
          Screen var1x = var0.currentScreen;
-         var0.setScreen(new TTConfigScreen(var1x));
+         var0.setScreen(TTConfigScreen.create(var1x));
       }));
    }
 
@@ -170,8 +172,8 @@ public class TierTagger implements ModInitializer {
    public static MutableText rankingPosition(PlayerInfo.Ranking ranking) {
       if (ranking.position() <= 0) return Text.empty();
       TierTaggerConfig config = manager.getConfig();
-      String trophy = config.isRankTrophies() ? switch (ranking.position()) {
-         case 1 -> "\uE901 "; case 2 -> "\uE902 "; case 3 -> "\uE903 "; default -> "";
+      String trophy = config.isRankNumbers() && config.isRankTrophies() ? switch (ranking.position()) {
+         case 1 -> "􏾳 "; case 2 -> "􏾴 "; case 3 -> "􏾵 "; default -> "";
       } : "";
       int color = config.isPodiumColors() ? switch (ranking.position()) {
          case 1 -> 0xFFD700; case 2 -> 0xC0C0C0; case 3 -> 0xCD7F32; default -> 0xAAAAAA;
@@ -200,6 +202,7 @@ public class TierTagger implements ModInitializer {
    }
 
    private static Optional<PlayerInfo.NamedRanking> pickWithKit(Map<String, PlayerInfo.Ranking> rankings, Optional<String> kit) {
+      rankings=rankings.entrySet().stream().filter(entry->manager.getConfig().allowsMode(entry.getKey())).collect(java.util.stream.Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
       if (kit.isPresent()) {
          GameMode mode = GameMode.byId(kit.get());
          PlayerInfo.Ranking ranking = rankings.get(mode.id());
@@ -241,6 +244,7 @@ public class TierTagger implements ModInitializer {
          var4.append(Text.literal(" (" + var0.points() + " pts)").formatted(Formatting.GRAY));
       }
 
+      if(manager.getConfig().isShowPeakTiers()&&var0.peakTier()!=null&&!var0.peakTier().equals(var0.tierName()))var4.append(Text.literal(" [Peak "+var0.peakTier()+"]").styled(style->style.withColor(getTierColor(var0.peakTier()))));
       return var4;
    }
 

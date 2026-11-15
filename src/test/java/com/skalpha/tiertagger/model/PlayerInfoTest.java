@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerInfoTest {
     @Test void diavanillaUsesItsOwnIcon() {
-        assertEquals(Character.valueOf('\ue814'),GameMode.byId("diavanilla").icon().orElseThrow());
+        assertEquals(new String(Character.toChars(0x10FFC0)),GameMode.byId("diavanilla").icon().orElseThrow());
         assertNotEquals(GameMode.byId("vanilla").icon(),GameMode.byId("diavanilla").icon());
     }
     @Test void currentPublicApiContractUsesCurrentTierAndCanonicalModes() {

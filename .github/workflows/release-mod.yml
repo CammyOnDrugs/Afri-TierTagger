@@ -1,17 +1,17 @@
-name: Publish mod 2.8.4
+name: Publish mod 2.8.6
 on:
-  push:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
     branches: [main]
-    paths:
-      - '.github/workflows/release-mod.yml'
-  workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: publish-mod-2.8.4
+  group: publish-mod-2.8.6
   cancel-in-progress: false
 jobs:
   publish:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,16 +19,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
           pattern: Afri-TiersTagger-mc*
           path: release-builds
           github-token: ${{ github.token }}
-          run-id: 42284697642
+          run-id: ${{ github.event.workflow_run.id }}
       - name: Verify and publish mod-only release
         env:
           GH_TOKEN: ${{ github.token }}
+          BUILD_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          BUILD_RUN: ${{ github.event.workflow_run.id }}
         run: python3 tools/publish-mod-release.py
-
-# Refresh the inspected older 2.8.4 release with the latest tested assets.

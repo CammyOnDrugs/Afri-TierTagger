@@ -18,6 +18,7 @@ public class MixinEntityRenderer {
    @ModifyReturnValue(method = "getNameTag", at = @At("RETURN"))
    public Component prependTier(Component original, Entity entity) {
       return ((TierTaggerConfig)TierTagger.getManager().getConfig()).isEnabled()
+            && TierTagger.getManager().getConfig().isNameTags()
             && entity instanceof Player player
             && original != null
             && !original.getString().contains(" | ")
@@ -27,7 +28,13 @@ public class MixinEntityRenderer {
 
    @Inject(method = "extractRenderState", at = @At("TAIL"))
    public void prependTierToNameTag(Entity entity, EntityRenderState state, float partialTick, CallbackInfo ci) {
+      var client=net.minecraft.client.Minecraft.getInstance();
+      if(TierTagger.getManager().getConfig().isEnabled()&&TierTagger.getManager().getConfig().isNameTags()&&TierTagger.getManager().getConfig().isShowOwnTier()&&entity==client.player&&!client.options.getCameraType().isFirstPerson()&&!state.isInvisible){
+         state.nameTag=entity.getName();if(!state.nameTag.getString().contains(" | "))state.nameTag=TierTagger.appendTier(entity.getUUID(),state.nameTag);state.nameTagAttachment=new net.minecraft.world.phys.Vec3(0,state.boundingBoxHeight+0.5,0);
+      }
+
       if (((TierTaggerConfig)TierTagger.getManager().getConfig()).isEnabled()
+         && TierTagger.getManager().getConfig().isNameTags()
          && entity instanceof Player player
          && state.nameTag != null
          && !state.nameTag.getString().contains(" | ")) {

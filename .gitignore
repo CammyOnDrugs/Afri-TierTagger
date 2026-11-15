@@ -10,3 +10,8 @@
 /config/
 
 **/target/
+
+libs/
+modern/libs/
+release-builds/
+release-dist/

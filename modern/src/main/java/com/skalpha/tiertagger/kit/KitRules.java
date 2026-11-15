@@ -16,6 +16,8 @@ public final class KitRules {
     static final String SPEED = "#speed_potion";
     static final String STRENGTH = "#strength_potion";
 
+    static final String SPLASH_TURTLE = "#splash_turtle_master";
+
     private KitRules() {}
 
                                                                                                        
@@ -23,6 +25,9 @@ public final class KitRules {
         List<String> matches = new ArrayList<>();
         boolean diamond = s.armor("diamond");
         boolean netherite = s.armor("netherite");
+
+        if (netherite && s.exact("mace",2) && s.has("firework_rocket")) matches.add("rocketmace");
+        if (diamond && s.exact("diamond_sword",2) && s.has("white_wool") && s.has(SPLASH_TURTLE) && s.has("netherite_pickaxe")) matches.add("holefight");
 
         if (diamond && s.has("crossbow") && s.has("diamond_axe")) matches.add("axe");
         if (diamond && s.has(HEAD) && s.has("cobweb") && s.has("diamond_pickaxe")
@@ -46,7 +51,7 @@ public final class KitRules {
         if (netherite && s.has("respawn_anchor") && s.has("end_crystal") && s.has("glowstone")) matches.add("vanilla");
         if (diamond && s.has("end_crystal") && s.absent("respawn_anchor")) matches.add("diavanilla");
         if (s.armor("netherite", true) && s.exact("mace", 2)
-            && s.exact("totem_of_undying", 2) && s.has("elytra")) matches.add("mace");
+            && s.exact("totem_of_undying", 2) && s.has("elytra") && s.absent("firework_rocket")) matches.add("mace");
         if (netherite && s.exact("mace", 1) && s.exact("totem_of_undying", 2)
             && s.has("netherite_spear") && s.absent("elytra")) matches.add("spear");
         if (netherite && s.has("netherite_sword") && s.exact(SPLASH_HEALING_II, 22)

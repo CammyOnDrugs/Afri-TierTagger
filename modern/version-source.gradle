@@ -21,6 +21,7 @@ def prepare = tasks.register('prepareVersionSources') {
     ".player.displayClientMessage(Component.literal(\"Displayed gamemode: \").append(var1x.asStyled(false)), true)": ".player.sendOverlayMessage(Component.literal(\"Displayed gamemode: \").append(var1x.asStyled(false)))",
     "client.gui.getChat().addMessage(": "client.player.sendSystemMessage(",
     "GuiGraphics": "GuiGraphicsExtractor",
+    "void renderContents(": "void extractContents(",
     "void render(": "void extractRenderState(",
     "super.render(": "super.extractRenderState(",
     "this.textField.render(": "this.textField.extractRenderState(",

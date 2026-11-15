@@ -1,14 +1,17 @@
 plugins {
-    id 'net.fabricmc.fabric-loom-remap' version '1.14.10'
+    id 'net.fabricmc.fabric-loom-remap' version '1.15.5'
 }
 
 version = project.mod_version
 group = 'com.skalpha.tiertagger'
 base { archivesName = 'Afri-TiersTagger' }
 
-repositories { maven { url = 'https://maven.uku3lig.net/releases' } }
+repositories { flatDir { dirs "libs" }; maven { url = 'https://maven.uku3lig.net/releases' } }
 
 dependencies {
+    modCompileOnly "local.modmenu:ModMenu:1.21.11"
+    modImplementation "local.walksy:WalksyLib:2.0.5+1.21.11"
+    include "local.walksy:WalksyLib:2.0.5+1.21.11"
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -31,4 +34,5 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
 }
 test { useJUnitPlatform() }
-jar { from('LICENSE', 'NOTICE', 'COPYRIGHT') }
+jar { from('LICENSE', 'NOTICE', 'COPYRIGHT', 'THIRD_PARTY_WALKSY.txt') }
+

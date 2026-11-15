@@ -18,6 +18,10 @@ public class MixinAvatarRenderer {
    private void onExtractRenderState(Avatar entity, AvatarRenderState state, float tickProgress, CallbackInfo ci) {
       if (((TierTaggerConfig)TierTagger.getManager().getConfig()).isEnabled()) {
          if (entity instanceof Player player) {
+            var client=net.minecraft.client.Minecraft.getInstance();
+            if(player==client.player&&TierTagger.getManager().getConfig().isShowOwnTier()&&!client.options.getCameraType().isFirstPerson()&&!state.isInvisible){
+                state.nameTag=player.getName();state.nameTagAttachment=new net.minecraft.world.phys.Vec3(0,state.boundingBoxHeight+0.5,0);
+            }
             if (state instanceof EntityRenderStateAccessor acc) {
                Component nameTag = acc.getNameTag();
                if (nameTag != null) {

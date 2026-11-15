@@ -134,12 +134,15 @@ public final class KitIdentifier {
             if (effect.getEffect().equals(MobEffects.SPEED)) types.add(KitRules.SPEED);
             if (effect.getEffect().equals(MobEffects.STRENGTH)) types.add(KitRules.STRENGTH);
             if (stack.is(Items.SPLASH_POTION)) {
+                if (effect.getEffect().equals(MobEffects.SLOWNESS)) types.add("#turtle_slowness");
+                if (effect.getEffect().equals(MobEffects.RESISTANCE)) types.add("#turtle_resistance");
                 if (effect.getEffect().equals(MobEffects.REGENERATION)) types.add(KitRules.SPLASH_REGENERATION);
                 if (effect.getEffect().equals(MobEffects.INSTANT_HEALTH) && effect.getAmplifier() == 1) {
                     types.add(KitRules.SPLASH_HEALING_II);
                 }
             }
         }
+        if(types.contains("#turtle_resistance")&&types.contains("#turtle_slowness")) types.add(KitRules.SPLASH_TURTLE);
         types.forEach(type -> b.item(type, count));
     }
 

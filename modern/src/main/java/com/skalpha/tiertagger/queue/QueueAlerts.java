@@ -33,10 +33,12 @@ public final class QueueAlerts {
     private static final URI ENDPOINT = URI.create("https://afritiers.co.za/api/queues");
     private static final Map<String, QueueFeed.Entry> queues = new HashMap<>();
     private static final ArrayDeque<QueueFeed.Entry> pending = new ArrayDeque<>();
-    private static QueueTracker tracker = new QueueTracker();
+    private static IIIIII tracker = new IIIIII();
     private static Object world;
     private static Object connection;
     private static boolean helloSent;
+    private static Boolean linked;
+    private static long feedReceived, linkReceived;
     private static final Set<String> seenTickets = new HashSet<>();
     private static final ArrayDeque<Ticket> tickets = new ArrayDeque<>();
     private record Ticket(String event, String username, String mode) {}
@@ -54,7 +56,7 @@ public final class QueueAlerts {
         ClientPlayNetworking.registerGlobalReceiver(QueuePayload.ID, (payload, context) -> acceptTickets(payload.json()));
         ClientTickEvents.END_CLIENT_TICK.register(QueueAlerts::tick);
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> dispatcher.register(
-            ClientCommandManager.literal("join-queue")
+            ClientCommandManager.literal("join-queue").executes(context -> { var client=context.getSource().getClient(); client.setScreen(new QueueScreen(client.screen)); return 1; })
                 .then(ClientCommandManager.argument("gamemode", StringArgumentType.word())
                     .suggests((context, builder) -> {
                         QueueFeed.openModes(queues.values(), builder.getRemaining()).forEach(builder::suggest);
@@ -76,7 +78,7 @@ public final class QueueAlerts {
                         }
                         Minecraft client = context.getSource().getClient();
                         if (client.getConnection() == null || !ClientPlayNetworking.canSend(QueuePayload.Hello.ID)) {
-                            context.getSource().sendError(Component.literal("Use /join-queue on LA-Network or SurgeMC with the updated AfriTiersLink plugin."));
+                            context.getSource().sendError(Component.literal("Use /join-queue on LA-Network, Afri-Network or SurgeMC with the updated AfriTiersLink plugin."));
                             return 0;
                         }
                         client.getConnection().sendCommand("afritierslink:join-queue " + mode);
@@ -91,12 +93,12 @@ public final class QueueAlerts {
             session++;
             inFlight = false;
             nextPoll = 0;
-            tracker = new QueueTracker();
+            tracker = new IIIIII();
             queues.clear();
             pending.clear();
             soundTicks = 0;
             displayTicks = 0;
-            seenTickets.clear(); tickets.clear(); helloSent = false;
+            seenTickets.clear(); tickets.clear(); helloSent = false; linked=null;feedReceived=0;linkReceived=0;
         }
         if (client.level == null || client.player == null) return;
         if (!helloSent && ClientPlayNetworking.canSend(QueuePayload.Hello.ID)) {
@@ -146,7 +148,7 @@ public final class QueueAlerts {
             int requestSession = session;
             HttpRequest request = HttpRequest.newBuilder(ENDPOINT).timeout(Duration.ofSeconds(10))
                 .header("Accept", "application/json").header("User-Agent", "Afri-TiersTagger/2.7.1").GET().build();
-            TierTagger.getClient().sendAsync(request, com.skalpha.tiertagger.net.PublicHttp.limitedUtf8(65_536))
+            TierTagger.getClient().sendAsync(request, com.skalpha.tiertagger.net.网络.limitedUtf8(65_536))
                 .thenApply(response -> {
                     if (response.statusCode() != 200) throw new IllegalArgumentException("Queue status unavailable");
                     return QueueFeed.parse(response.body());
@@ -154,7 +156,7 @@ public final class QueueAlerts {
                     if (requestSession != session) return;
                     inFlight = false;
                     if (error != null) { queues.clear(); return; }
-                    queues.clear();
+                    queues.clear();feedReceived=System.nanoTime();
                     feed.queues().forEach(entry -> queues.put(entry.mode(), entry));
                     for (QueueFeed.Entry entry : tracker.accept(feed, Instant.now())) {
                         if (TierTagger.getManager().getConfig().isWaitlistAlerts() && pending.size() < QueueFeed.MODES.size()) pending.addLast(entry);
@@ -167,6 +169,7 @@ public final class QueueAlerts {
         try {
             var root = JsonParser.parseString(json).getAsJsonObject();
             if (!"tickets".equals(root.get("type").getAsString())) return;
+            if(root.has("linked")&&root.get("linked").isJsonPrimitive()&&root.getAsJsonPrimitive("linked").isBoolean()){linked=root.get("linked").getAsBoolean();linkReceived=System.nanoTime();}
             var rows = root.getAsJsonArray("tickets");
             if (rows.size() > QueueFeed.MODES.size()) return;
             var parsed = new java.util.ArrayList<Ticket>();
@@ -179,9 +182,20 @@ public final class QueueAlerts {
                 parsed.add(new Ticket(event, username, mode));
             }
             for (Ticket ticket : parsed) {
+                var player=Minecraft.getInstance().player;
+                if(player==null||!player.getGameProfile().name().equalsIgnoreCase(ticket.username()))continue;
                 if (seenTickets.add(ticket.event()) && TierTagger.getManager().getConfig().isTicketAlerts() && tickets.size() < 16) tickets.addLast(ticket);
             }
         } catch (RuntimeException ignored) {}
+    }
+
+    public static Boolean linked(){return System.nanoTime()-linkReceived<Duration.ofSeconds(45).toNanos()?linked:null;}
+    public static boolean feedOnline(){return feedReceived!=0&&System.nanoTime()-feedReceived<Duration.ofSeconds(15).toNanos();}
+    public static boolean isOpen(String mode){return feedOnline()&&queues.containsKey(mode)&&queues.get(mode).open();}
+    public static boolean supported(){return ClientPlayNetworking.canSend(QueuePayload.Hello.ID);}
+    public static void join(String mode){
+        if(!isOpen(mode)||!supported()||Boolean.FALSE.equals(linked()))return;
+        var client=Minecraft.getInstance();if(client.getConnection()!=null)client.getConnection().sendCommand("afritierslink:join-queue "+mode);
     }
 
     static String smallCaps(String value) {

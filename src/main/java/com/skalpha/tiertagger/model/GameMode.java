@@ -30,6 +30,8 @@ public record GameMode(String id, String title, int color) {
          };
 
          String title = switch (canonical) {
+            case "rocketmace" -> "§bRocketMace§r";
+            case "holefight" -> "§bHoleFight§r";
             case "axe" -> "§aAxe§r";
             case "mace" -> "§bMace§r";
             case "nethpot" -> "§7NethOp§r";
@@ -75,9 +77,9 @@ public record GameMode(String id, String title, int color) {
       return this.id.equals(OVERALL.id);
    }
 
-   public Optional<Character> icon() {
-      Pair<Character, TextColor> pair = this.iconAndColor();
-      return pair != null && pair.right() != null ? Optional.of((Character)pair.left()) : Optional.empty();
+   public Optional<String> icon() {
+      Pair<String, TextColor> pair = this.iconAndColor();
+      return pair != null && pair.right() != null ? Optional.of(pair.left()) : Optional.empty();
    }
 
    public Text asStyled(boolean withIcon) {
@@ -85,27 +87,11 @@ public record GameMode(String id, String title, int color) {
       return (Text)(withIcon && this.icon().isPresent() ? Text.literal(this.icon().get().toString()).append(base) : base);
    }
 
-   private Pair<Character, TextColor> iconAndColor() {
-      String var1 = this.id;
-
-      return switch (var1) {
-         case "axe" -> Pair.of('\ue701', TextColor.fromFormatting(Formatting.GREEN));
-         case "mace" -> Pair.of('\ue702', TextColor.fromRgb(65535));
-         case "nethpot" -> Pair.of('\ue703', TextColor.fromRgb(8947848));
-         case "smp" -> Pair.of('\ue705', TextColor.fromRgb(5635925));
-         case "sword" -> Pair.of('\ue706', TextColor.fromRgb(10812912));
-         case "uhc" -> Pair.of('\ue707', TextColor.fromFormatting(Formatting.RED));
-         case "vanilla" -> Pair.of('\ue708', TextColor.fromFormatting(Formatting.LIGHT_PURPLE));
-         case "bed" -> Pair.of('\ue801', TextColor.fromRgb(16711680));
-         case "creeper" -> Pair.of('\ue803', TextColor.fromFormatting(Formatting.GREEN));
-         case "diasmp" -> Pair.of('\ue806', TextColor.fromRgb(9201291));
-         case "cart" -> Pair.of('\ue809', TextColor.fromRgb(16753920));
-         case "ogv" -> Pair.of('\ue810', TextColor.fromFormatting(Formatting.GOLD));
-         case "speed" -> Pair.of('\ue811', TextColor.fromRgb(4434385));
-         case "spear" -> Pair.of('\ue813', TextColor.fromRgb(8388736));
-         case "diavanilla" -> Pair.of('\ue814', TextColor.fromFormatting(Formatting.WHITE));
-         case "diapot" -> Pair.of('\ue704', TextColor.fromRgb(16711680));
-         default -> null;
-      };
+   public static volatile int iconStyle;
+   private Pair<String, TextColor> iconAndColor() {
+      int index=java.util.List.of("sword","axe","vanilla","uhc","diapot","nethpot","smp","mace","spear","diasmp","diavanilla","cart","speed","creeper","bed","ogv","rocketmace","holefight").indexOf(this.id);
+      if(index<0)return null;
+      int style=Math.max(0,Math.min(3,iconStyle));
+      return Pair.of(new String(Character.toChars(0x10FFB6+style*18+index)),TextColor.fromRgb(0xFFFFFF));
    }
 }

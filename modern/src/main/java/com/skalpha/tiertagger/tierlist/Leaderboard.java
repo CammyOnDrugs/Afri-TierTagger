@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 public final class Leaderboard {
-    public static final List<String> MODES=List.of("overall","sword","axe","mace","uhc","smp","diapot","vanilla","nethpot","ogv","creeper","speed","cart","bed","diasmp","spear","diavanilla");
+    public static final List<String> MODES=List.of("overall","sword","axe","vanilla","uhc","diapot","nethpot","smp","mace","spear","diasmp","diavanilla","cart","speed","creeper","bed","ogv","rocketmace","holefight");
     private Leaderboard(){}
     public static List<PlayerInfo> rows(Collection<PlayerInfo> source,String mode,String query){
         if(!MODES.contains(mode))throw new IllegalArgumentException("Unknown gamemode");

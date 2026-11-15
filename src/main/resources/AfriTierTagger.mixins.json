@@ -6,8 +6,7 @@
   "client": [
     "MixinEntityRenderer",
     "MixinPlayer",
-    "MixinPlayerTabOverlay",
-    "MixinTextDisplayRenderer"
+    "MixinPlayerTabOverlay"
   ],
   "injectors": {
     "defaultRequire": 1

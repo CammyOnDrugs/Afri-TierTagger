@@ -6,6 +6,6 @@ import net.uku3lig.ukulib.api.UkulibAPI;
 
 public class UkulibIntegration implements UkulibAPI {
    public UnaryOperator<Screen> supplyConfigScreen() {
-      return TTConfigScreen::new;
+      return TTConfigScreen::create;
    }
 }

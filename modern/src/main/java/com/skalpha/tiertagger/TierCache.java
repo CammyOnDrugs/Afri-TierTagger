@@ -39,9 +39,7 @@ public class TierCache {
       t.setDaemon(true);
       return t;
    });
-   private static final List<String> DEFAULT_MODE_IDS = List.of(
-      "overall", "sword", "axe", "mace", "uhc", "smp", "diapot", "vanilla", "nethpot", "ogv", "creeper", "speed", "cart", "bed", "diasmp", "spear", "diavanilla"
-   );
+   private static final List<String> DEFAULT_MODE_IDS = List.of("overall","sword","axe","vanilla","uhc","diapot","nethpot","smp","mace","spear","diasmp","diavanilla","cart","speed","creeper","bed","ogv","rocketmace","holefight");
    private static volatile int findCacheVersion = 0;
    private static volatile int lastFindVersion = -1;
    private static volatile List<String> sortedNames = null;

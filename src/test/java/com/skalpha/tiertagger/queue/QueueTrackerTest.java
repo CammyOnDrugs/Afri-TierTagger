@@ -15,12 +15,12 @@ class QueueTrackerTest {
     }
 
     @Test void firstSnapshotAndRepeatedEventsAreSilent() {
-        QueueTracker tracker = new QueueTracker();
+        IIIIII tracker = new IIIIII();
         assertTrue(tracker.accept(feed(true, A, NOW), NOW).isEmpty());
         assertTrue(tracker.accept(feed(true, A, NOW.plusSeconds(5)), NOW.plusSeconds(5)).isEmpty());
     }
     @Test void closeReopenAlertsOnceWithNewIdentity() {
-        QueueTracker tracker = new QueueTracker();
+        IIIIII tracker = new IIIIII();
         tracker.accept(feed(false, null, NOW), NOW);
         assertEquals(1, tracker.accept(feed(true, A, NOW.plusSeconds(1)), NOW.plusSeconds(1)).size());
         assertTrue(tracker.accept(feed(true, A, NOW.plusSeconds(2)), NOW.plusSeconds(2)).isEmpty());
@@ -29,14 +29,14 @@ class QueueTrackerTest {
         assertTrue(tracker.accept(feed(true, A, NOW.plusSeconds(5)), NOW.plusSeconds(5)).isEmpty());
     }
     @Test void staleOutOfOrderAndFutureResponsesCannotTriggerAlerts() {
-        QueueTracker tracker = new QueueTracker();
+        IIIIII tracker = new IIIIII();
         tracker.accept(feed(false, null, NOW), NOW);
         assertTrue(tracker.accept(feed(true, A, NOW.minusSeconds(1)), NOW).isEmpty());
         assertTrue(tracker.accept(feed(true, A, NOW.plusSeconds(121)), NOW).isEmpty());
         assertTrue(tracker.accept(feed(true, A, NOW), NOW.plusSeconds(121)).isEmpty());
     }
     @Test void legacyOpenWithoutAnEventIsSilent() {
-        QueueTracker tracker = new QueueTracker();
+        IIIIII tracker = new IIIIII();
         tracker.accept(feed(false, null, NOW), NOW);
         assertTrue(tracker.accept(feed(true, null, NOW.plusSeconds(1)), NOW.plusSeconds(1)).isEmpty());
     }

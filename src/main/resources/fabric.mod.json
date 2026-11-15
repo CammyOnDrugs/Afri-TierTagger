@@ -19,17 +19,18 @@
     "main": [
       "com.skalpha.tiertagger.TierTagger"
     ],
-    "ukulib": [
-      "com.skalpha.tiertagger.config.UkulibIntegration"
+    "modmenu": [
+      "com.skalpha.tiertagger.config.ModMenuIntegration"
     ]
   },
   "mixins": [
     "AfriTierTagger.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.17",
+    "fabricloader": ">=0.19.5",
     "minecraft": "~1.21.11",
     "ukulib": "^1.10.1",
-    "fabric-api": "*"
+    "fabric-api": "*",
+    "walksylib": ">=2.0.5"
   }
 }

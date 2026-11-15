@@ -17,7 +17,7 @@ class PublicHttpTest {
         public void cancel() { cancelled = true; }
     }
     @Test void decodesUtf8AcrossChunks() throws Exception {
-        var body = new PublicHttp.LimitedBody(64, Duration.ofSeconds(2));
+        var body = new 网络.LimitedBody(64, Duration.ofSeconds(2));
         body.onSubscribe(new Subscription());
         byte[] text = "ǫᴜᴇᴜᴇ".getBytes(StandardCharsets.UTF_8);
         body.onNext(List.of(ByteBuffer.wrap(text, 0, 1)));
@@ -26,7 +26,7 @@ class PublicHttpTest {
         assertEquals("ǫᴜᴇᴜᴇ",body.getBody().toCompletableFuture().get());
     }
     @Test void overflowCancelsUpstreamBeforeAccumulatingMore() {
-        var body = new PublicHttp.LimitedBody(3, Duration.ofSeconds(2));
+        var body = new 网络.LimitedBody(3, Duration.ofSeconds(2));
         var subscription = new Subscription();
         body.onSubscribe(subscription);
         body.onNext(List.of(ByteBuffer.wrap(new byte[4])));
@@ -34,7 +34,7 @@ class PublicHttpTest {
         assertTrue(body.getBody().toCompletableFuture().isCompletedExceptionally());
     }
     @Test void stalledBodyCancelsUpstream() {
-        var body = new PublicHttp.LimitedBody(64, Duration.ofMillis(30));
+        var body = new 网络.LimitedBody(64, Duration.ofMillis(30));
         var subscription = new Subscription();
         body.onSubscribe(subscription);
         assertThrows(ExecutionException.class, () -> body.getBody().toCompletableFuture().get(2, TimeUnit.SECONDS));

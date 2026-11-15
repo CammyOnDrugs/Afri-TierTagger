@@ -1,149 +1,155 @@
 package com.skalpha.tiertagger.config;
 
-import com.skalpha.tiertagger.TierCache;
 import com.skalpha.tiertagger.TierTagger;
-import com.skalpha.tiertagger.tierlist.PlayerSearchScreen;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map.Entry;
+import main.walksy.lib.api.config.Config;
+import main.walksy.lib.core.gui.WLScreen;
+import main.walksy.lib.core.gui.WalksyLibPanelScreen;
+import main.walksy.lib.core.gui.modal.PopoverHost;
+import main.walksy.lib.core.gui.style.Theme;
+import main.walksy.lib.core.gui.widget.*;
+import main.walksy.lib.core.gui.widget.options.*;
+import main.walksy.lib.core.render.WLGraphics2D;
+import main.walksy.lib.core.render.WLRenderSystem;
+import main.walksy.lib.core.render.font.Fonts;
+import main.walksy.lib.core.render.texture.Icons;
+import main.walksy.lib.core.gui.liquid.*;
+import net.minecraft.util.Identifier;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tab.Tab;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TabNavigationWidget;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
-import net.uku3lig.ukulib.config.option.CyclingOption;
-import net.uku3lig.ukulib.config.option.InputOption;
-import net.uku3lig.ukulib.config.option.ScreenOpenButton;
-import net.uku3lig.ukulib.config.option.WidgetCreator;
-import net.uku3lig.ukulib.config.option.widget.ButtonTab;
-import net.uku3lig.ukulib.config.screen.TabbedConfigScreen;
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.CharInput;
 
-public class TTConfigScreen extends TabbedConfigScreen<TierTaggerConfig> {
-   private boolean isInitialized = false;
-   private int selectedTabIndex = 0;
-
-   public TTConfigScreen(Screen var1) {
-      super("Afri-TiersTagger Config", var1, TierTagger.getManager());
-   }
-
-   protected Tab[] getTabs(TierTaggerConfig var1) {
-      return new Tab[]{new TTConfigScreen.MainSettingsTab(), new TTConfigScreen.ColorsTab(), new TTConfigScreen.AlertsTab()};
-   }
-
-   public void refresh(int var1) {
-      this.selectedTabIndex = var1;
-      this.clearChildren();
-      this.init();
-   }
-
-   protected void init() {
-      super.init();
-      this.children()
-         .stream()
-         .filter(var0 -> var0 instanceof TabNavigationWidget)
-         .map(var0 -> (TabNavigationWidget)var0)
-         .findFirst()
-         .ifPresent(var1 -> var1.selectTab(this.selectedTabIndex, false));
-      this.isInitialized = true;
-   }
-
-   protected Collection<ClickableWidget> getInvalidOptions() {
-      return (Collection<ClickableWidget>)(!this.isInitialized ? Collections.emptyList() : super.getInvalidOptions());
-   }
-
-   public class ColorsTab extends ButtonTab<TierTaggerConfig> {
-      public ColorsTab() {
-         super("tiertagger.colors", TTConfigScreen.this.manager);
-      }
-
-      protected WidgetCreator[] getWidgets(TierTaggerConfig var1) {
-         ArrayList<WidgetCreator> var2 = new ArrayList();
-         var2.add(new ColorInputOption("tiertagger.colors.retired", var1.getRetiredColorHex(), var1x -> {
-            var1.setRetiredColorHex(var1x);
-            TierTagger.invalidateTierComponentCache();
-         }));
-
-         for (Entry var3 : var1.getTierColorsHex()
-            .entrySet()
-            .stream()
-            .sorted(
-               Comparator.comparingInt(
-                  var0 -> Integer.parseInt(((String)var0.getKey()).replaceAll("[^0-9]", "")) * 2 + (((String)var0.getKey()).startsWith("LT") ? 1 : 0)
-               )
-            )
-            .toList()) {
-            String var5 = (String)var3.getKey();
-            var2.add(new ColorInputOption("tiertagger.colors." + var5, (String)var3.getValue(), var2x -> {
-               var1.setTierColorHex(var5, var2x);
-               TierTagger.invalidateTierComponentCache();
-            }));
-         }
-
-         return var2.toArray(WidgetCreator[]::new);
-      }
-   }
-
-   public class AlertsTab extends ButtonTab<TierTaggerConfig> {
-      public AlertsTab() { super("tiertagger.alerts", TTConfigScreen.this.manager); }
-      protected WidgetCreator[] getWidgets(TierTaggerConfig config) {
-         return new WidgetCreator[]{
-            CyclingOption.ofBoolean("tiertagger.alerts.waitlist", config.isWaitlistAlerts(), config::setWaitlistAlerts),
-            CyclingOption.ofTranslatableEnum("tiertagger.alerts.waitlistLocation", TierTaggerConfig.AlertLocation.class, config.getWaitlistLocation(), config::setWaitlistLocation),
-            CyclingOption.ofBoolean("tiertagger.alerts.waitlistSound", config.isWaitlistSound(), config::setWaitlistSound),
-            CyclingOption.ofBoolean("tiertagger.alerts.ticket", config.isTicketAlerts(), config::setTicketAlerts),
-            CyclingOption.ofTranslatableEnum("tiertagger.alerts.ticketLocation", TierTaggerConfig.AlertLocation.class, config.getTicketLocation(), config::setTicketLocation),
-            CyclingOption.ofBoolean("tiertagger.alerts.ticketSound", config.isTicketSound(), config::setTicketSound)
-         };
-      }
-   }
-
-   public class MainSettingsTab extends ButtonTab<TierTaggerConfig> {
-      public MainSettingsTab() {
-         super("tiertagger.config", TTConfigScreen.this.manager);
-      }
-
-      protected WidgetCreator[] getWidgets(TierTaggerConfig var1) {
-         ArrayList<WidgetCreator> var2 = new ArrayList();
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.enabled", var1.isEnabled(), var1x -> {
-            var1.setEnabled(var1x);
-            TierTagger.invalidateTierComponentCache();
-         }));
-         var2.add(
-            new CyclingOption<com.skalpha.tiertagger.model.GameMode>(
-               "tiertagger.config.gamemode",
-               TierCache.getGamemodesOrDefault(),
-               var1.getGameMode(),
-               var1x -> {
-                  var1.setGameMode(var1x.id());
-                  TierTagger.invalidateTierComponentCache();
-               },
-               var0 -> Text.literal(var0.title()).styled(var1x -> var1x.withColor(var0.color())),
-               var0 -> var0.isNone() ? Tooltip.of(Text.translatable("tiertagger.config.gamemode.none")) : null,
-               !var1.getGameMode().isNone()
-            )
-         );
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.retired", var1.isShowRetired(), var1x -> {
-            var1.setShowRetired(var1x);
-            TierTagger.invalidateTierComponentCache();
-         }));
-         var2.add(CyclingOption.ofTranslatableEnum("tiertagger.config.highest", TierTaggerConfig.HighestMode.class, var1.getHighestMode(), var1x -> {
-            var1.setHighestMode(var1x);
-            TierTagger.invalidateTierComponentCache();
-         }, SimpleOption.constantTooltip(Text.translatable("tiertagger.config.highest.desc"))));
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.playerList", var1.isPlayerList(), var1::setPlayerList));
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.kitIdentifier", var1.isKitIdentifier(), enabled -> {
-            var1.setKitIdentifier(enabled);
-            com.skalpha.tiertagger.kit.KitIdentifier.clear();
-            TierTagger.invalidateTierComponentCache();
-         }));
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.rankNumbers", var1.isRankNumbers(), value -> { var1.setRankNumbers(value); TierTagger.invalidateTierComponentCache(); }));
-         var2.add(CyclingOption.ofBoolean("tiertagger.config.podiumColors", var1.isPodiumColors(), value -> { var1.setPodiumColors(value); TierTagger.invalidateTierComponentCache(); }));
-         var2.add(new ScreenOpenButton("tiertagger.config.search", PlayerSearchScreen::new));
-         return var2.toArray(WidgetCreator[]::new);
-      }
-   }
+public final class TTConfigScreen extends WLScreen {
+    private final Theme previousTheme=Theme.get();
+    private final Integer previousAccent=Theme.accentOverride();
+    private final Config options=new WalksySettings().getOrCreateConfig();
+    private final PopoverHost popover=new PopoverHost();
+    private final LiquidTransition transition=new LiquidTransition(LiquidProfile.smooth(),0.5f);
+    private long frame=-1;
+    private LiquidRect bounds;
+    private float scale;
+    private double lastSize=-1;
+    private boolean lastDark;
+    private double lastOpacity=-1;
+    private final Icons.Icon logo=new Icons.Icon(Identifier.of("tier-tagger","icon.png"),1254);
+    private boolean popoverPressed,pointerDown;
+    private int page,x,y,w,h,rail;
+    private String query="";
+    private ScrollPanel list;
+    private RowContext context;
+    public TTConfigScreen(Screen parent){super(parent,"Afri-Tiers Settings");}
+    public static Screen create(Screen parent){
+        return TierTagger.getManager().getConfig().isLegacyMenu()?new LegacyConfigScreen(parent):new TTConfigScreen(parent);
+    }
+    static void switchMenu(Screen parent,boolean legacy){
+        TierTagger.getManager().getConfig().setLegacyMenu(legacy);
+        TierTagger.getManager().saveConfig();
+        main.walksy.lib.core.platform.WLClient.setScreen(create(parent));
+    }
+    private main.walksy.lib.core.render.glass.api.GlassStyle panelStyle(TierTaggerConfig config){
+        var style=WalksyLibPanelScreen.panelStyle().copy().tint(config.getMenuColor(),0.12f);
+        return config.isLiquidGlass()?style:style.flat();
+    }
+    private void applyTheme(){
+        WalksyLibPanelScreen.THEME=TierTagger.getManager().getConfig().isDarkTheme()?Theme.DARK:Theme.LIGHT;
+        Theme.setAccentOverride(0xFF000000|TierTagger.getManager().getConfig().getMenuColor());
+    }
+    public void refresh(int tab){page=Math.max(0,Math.min(3,tab));if(list!=null)populate();}
+    private void setDark(boolean dark){
+        TierTagger.getManager().getConfig().setDarkTheme(dark);TierTagger.getManager().saveConfig();
+        popover.closeInstant();applyTheme();clearAndInit();
+    }
+    private int px(float value){return Math.max(1,Math.round(value*scale));}
+    private Icons.Icon icon(String name){return new Icons.Icon(Identifier.of("tier-tagger","textures/gui/"+name+".png"),64);}
+    @Override protected void init(){
+        super.init();applyTheme();
+        var config=TierTagger.getManager().getConfig();lastSize=config.getMenuScale();lastDark=config.isDarkTheme();lastOpacity=config.getMenuOpacity();
+        scale=WLScreen.uiScaleFactor()*(float)lastSize;
+        float fraction=Math.min(0.96f,0.6085f*WLScreen.sizeMultiplier()*(float)lastSize);
+        w=Math.round(width*fraction);h=Math.round(height*fraction);x=(width-w)/2;y=(height-h)/2;
+        rail=Math.round(Math.max(Math.min(128*scale,w*0.32f),Math.min(w*0.208f,208*scale)));
+        int margin=px(8),padding=px(12),rowHeight=px(20),gap=px(3),left=x+margin+padding;
+        int rowWidth=rail-2*padding;
+        String[] names={"General","Alerts","Tier colors","Settings"};
+        String[] icons={"home","bell","palette","settings"};
+        for(int i=0;i<names.length;i++){
+            int tab=i;
+            addDrawableChild(new SidebarActionRow(left,i==3?y+h-px(32)-rowHeight-gap:y+px(62)+i*(rowHeight+gap),rowWidth,rowHeight,names[i],icon(icons[i]),()->{page=tab;query="";popover.closeInstant();clearAndInit();},()->page==tab));
+        }
+        addDrawableChild(new SidebarActionRow(left,y+h-px(32),rowWidth,rowHeight,"Done",Icons.CHECK,this::close,null));
+        if(page==3)addDrawableChild(new SidebarActionRow(left,y+h-px(32)-2*(rowHeight+gap),rowWidth,rowHeight,"Legacy menu",Icons.APPEARANCE,()->switchMenu(parent,true),null));
+        int right=x+rail+2*margin,cw=w-rail-3*margin;
+        int searchWidth=Math.min(px(120),cw/3),searchHeight=px(18);
+        SearchBar search=new SearchBar(right+cw-searchWidth,y+margin,searchWidth,searchHeight,value->{query=value;populate();});
+        search.setValue(query);addDrawableChild(search);
+        String[] destinations={"https://github.com/CammyOnDrugs/Afri-TierTagger","https://modrinth.com/mod/afri-tiertagger","https://afritiers.co.za"};
+        String[] socialIcons={"github","modrinth","website"};
+        for(int i=0;i<3;i++)addDrawableChild(new LinkButton(right+px(150+i*23),y+margin,px(20),icon(socialIcons[i]),destinations[i]));
+        list=addDrawableChild(new ScrollPanel(right,y+px(62),cw,h-px(76)));
+        context=new RowContext(option->{},(anchor,content)->popover.open(anchor,width,height,content),
+            (anchor,content)->popover.openCentered(anchor,width,height,x,y,w,h,content),
+            (anchor,px,py,content)->popover.openAt(anchor,px,py,width,height,content),popover::close);
+        populate();
+        LiquidRect nextBounds=new LiquidRect(x,y,w,h,18*scale);
+        if(bounds==null)transition.open(nextBounds);
+        else if(!bounds.equals(nextBounds))transition.retarget(nextBounds);
+        bounds=nextBounds;
+        if(!config.isMenuAnimations())transition.setProgress(1);
+    }
+    private void populate(){
+        if(list==null)return;list.clear();
+        if(page==3&&query.isBlank())Updates.start();
+        if(query.isBlank())OptionWidgetFactory.populateGroups(list,java.util.List.of(options.categories().getFirst().groups().get(page)),context,null);
+        else OptionWidgetFactory.populateSearch(list,options.categories(),query,context);
+    }
+    private void advance(){
+        long current=WLRenderSystem.frameId();if(frame==current)return;frame=current;
+        transition.update(WLRenderSystem.frameDeltaTicks());
+    }
+    @Override protected float contentOpacity(){return Math.max(0,Math.min(1,transition.value()));}
+    @Override protected void applyContentTransform(org.joml.Matrix3x2fStack pose){
+        LiquidRect rect=transition.currentPrimary();if(rect==null||transition.isSettled()||w<=0||h<=0)return;
+        pose.translate(rect.centerX(),rect.centerY()).scale(rect.w()/w,rect.h()/h).translate(-(x+w/2f),-(y+h/2f));
+    }
+    @Override protected boolean isAnimating(){return !transition.isSettled();}
+    @Override protected void extractBlurredBackground(WLGraphics2D graphics){advance();if(TierTagger.getManager().getConfig().isLiquidGlass())WLRenderSystem.glassUniforms().requestGlassPass(graphics);}
+    @Override protected void extractBackground(WLGraphics2D graphics,int mouseX,int mouseY,float delta){
+        if(client==null||client.world==null)extractPanorama(graphics,delta);
+        if(TierTagger.getManager().getConfig().isLiquidGlass())extractScreenBlur(graphics,delta);
+    }
+    @Override protected void extractTransparentBackground(WLGraphics2D graphics){}
+    @Override protected void extractMenuBackground(WLGraphics2D graphics,int x,int y,int width,int height){}
+    @Override public void extract(WLGraphics2D graphics,int mouseX,int mouseY,float delta){
+        advance();applyTheme();Theme theme=Theme.get();
+        var config=TierTagger.getManager().getConfig();
+        transition.emit(graphics,panelStyle(config).opacity((float)config.getMenuOpacity()*contentOpacity()),0);
+        graphics.pose().pushMatrix();applyContentTransform(graphics.pose());
+        graphics.glass().dimensions(x+px(8),y+px(8),rail,h-px(16)).cornerRadius(10*scale).style((config.isLiquidGlass()?WalksyLibPanelScreen.sidebarPanelStyle().copy():WalksyLibPanelScreen.sidebarPanelStyle().copy().flat()).opacity(contentOpacity())).extract();
+        float logoSize=20*scale;
+        logo.extract(graphics,x+px(18),y+px(23),logoSize,0xFFFFFFFF);
+        Fonts.SFPRO_DISPLAY_BOLD.extract(graphics,"Afri-TiersTagger",x+px(43),y+px(22),12*scale,theme.label());
+        Fonts.SFPRO_DISPLAY.extract(graphics,"By Brianni_MC",x+px(43),y+px(39),10*scale,theme.secondaryLabel());
+        float cx=x+rail+px(16);
+        Fonts.SFPRO_DISPLAY_BOLD.extract(graphics,"Afri-TiersTagger",cx,y+px(8),14*scale,theme.label());
+        Fonts.SFPRO_DISPLAY.extract(graphics,(page==3?Updates.status():"Player tiers, rankings and testing alerts • By Brianni_MC"),cx,y+px(31),11*scale,theme.secondaryLabel());
+        graphics.pose().popMatrix();
+        popover.extract(graphics,mouseX,mouseY,delta);
+    }
+    @Override public void tick(){
+        super.tick();
+        var config=TierTagger.getManager().getConfig();
+        float nextScale=WLScreen.uiScaleFactor()*(float)config.getMenuScale();
+        if(!pointerDown&&Math.abs(nextScale-scale)>0.001f){popover.closeInstant();clearAndInit();}
+    }
+    @Override public boolean mouseClicked(Click click,boolean twice){pointerDown=true;if(popover.isOpen()&&popover.mouseClicked(click,twice)){popoverPressed=true;return true;}
+        popoverPressed=false;return super.mouseClicked(click,twice);}
+    @Override public boolean mouseDragged(Click click,double dx,double dy){return popoverPressed?popover.mouseDragged(click,dx,dy):super.mouseDragged(click,dx,dy);}
+    @Override public boolean mouseReleased(Click click){pointerDown=false;boolean handled=popoverPressed?popover.mouseReleased(click):super.mouseReleased(click);popoverPressed=false;return handled;}
+    @Override public boolean mouseScrolled(double mx,double my,double sx,double sy){return popover.mouseScrolled(mx,my,sx,sy)||super.mouseScrolled(mx,my,sx,sy);}
+    @Override public boolean keyPressed(KeyInput input){return popover.isOpen()?popover.keyPressed(input):super.keyPressed(input);}
+    @Override public boolean charTyped(CharInput input){return popover.charTyped(input)||super.charTyped(input);}
+    @Override public void removed(){
+        popover.closeInstant();options.saveAndNotify();
+        WalksyLibPanelScreen.THEME=previousTheme;Theme.setAccentOverride(previousAccent);super.removed();
+    }
 }

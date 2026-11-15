@@ -1,8 +1,8 @@
 package com.skalpha.tiertagger.tierlist;
 
 import com.skalpha.tiertagger.TierTagger;
-import com.skalpha.tiertagger.model.PortraitSource;
-import com.skalpha.tiertagger.net.PublicHttp;
+import com.skalpha.tiertagger.model.meowmeow;
+import com.skalpha.tiertagger.net.网络;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.time.Duration;
@@ -25,20 +25,20 @@ final class PortraitTexture implements AutoCloseable {
     private boolean closed,loaded;
     private int imageWidth=256,imageHeight=256;
     private String error="Loading portrait...";
-    PortraitTexture(String source){load(PortraitSource.allowed(source)?source:PortraitSource.FALLBACK,true);}
+    PortraitTexture(String source){load(meowmeow.allowed(source)?source:meowmeow.FALLBACK,true);}
     private void load(String source,boolean fallback){
         byte[] existing=cached(source);
-        future=existing!=null?CompletableFuture.completedFuture(existing):TierTagger.getClient().sendAsync(HttpRequest.newBuilder(URI.create(source)).timeout(Duration.ofSeconds(15)).GET().build(),PublicHttp.limitedBytes(1048576)).thenApply(response->{if(response.statusCode()!=200)throw new IllegalStateException();return response.body();});
+        future=existing!=null?CompletableFuture.completedFuture(existing):TierTagger.getClient().sendAsync(HttpRequest.newBuilder(URI.create(source)).timeout(Duration.ofSeconds(15)).GET().build(),网络.limitedBytes(1048576)).thenApply(response->{if(response.statusCode()!=200)throw new IllegalStateException();return response.body();});
         future.whenComplete((bytes,failure)->MinecraftClient.getInstance().execute(()->{
             if(closed)return;
-            if(failure!=null){if(fallback&&!source.equals(PortraitSource.FALLBACK))load(PortraitSource.FALLBACK,false);else error="Portrait unavailable";return;}
+            if(failure!=null){if(fallback&&!source.equals(meowmeow.FALLBACK))load(meowmeow.FALLBACK,false);else error="Portrait unavailable";return;}
             try{
                 if(bytes.length<24||java.nio.ByteBuffer.wrap(bytes).getLong()!=0x89504E470D0A1A0AL||java.nio.ByteBuffer.wrap(bytes,16,4).getInt()<1||java.nio.ByteBuffer.wrap(bytes,20,4).getInt()<1||java.nio.ByteBuffer.wrap(bytes,16,4).getInt()>1024||java.nio.ByteBuffer.wrap(bytes,20,4).getInt()>1024)throw new IllegalArgumentException();
                 NativeImage image=NativeImage.read(bytes);
                 if(image.getWidth()<1||image.getHeight()<1||image.getWidth()>1024||image.getHeight()>1024){image.close();throw new IllegalArgumentException();}
                 imageWidth=image.getWidth();imageHeight=image.getHeight();remember(source,bytes);
                 MinecraftClient.getInstance().getTextureManager().registerTexture(id,new NativeImageBackedTexture(()->"Afri-Tiers website portrait",image));loaded=true;
-            }catch(Exception exception){if(fallback&&!source.equals(PortraitSource.FALLBACK))load(PortraitSource.FALLBACK,false);else error="Portrait unavailable";}
+            }catch(Exception exception){if(fallback&&!source.equals(meowmeow.FALLBACK))load(meowmeow.FALLBACK,false);else error="Portrait unavailable";}
         }));
     }
     void draw(DrawContext graphics,int x,int y,int width,int height){

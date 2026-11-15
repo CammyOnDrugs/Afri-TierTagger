@@ -7,22 +7,22 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PortraitAndLeaderboardTest {
-    private String portrait(String json){return PortraitSource.forPlayer(JsonParser.parseString(json).getAsJsonObject());}
+    private String portrait(String json){return meowmeow.forPlayer(JsonParser.parseString(json).getAsJsonObject());}
     @Test void paidPortraitUsesVerifiedWebsiteIdentityAndCanonicalBust(){
         assertEquals("https://visage.surgeplay.com/bust/256/51cf1c94674d4b42ba66bc88ae843a62.png",portrait("""
             {"accountType":"paid","uuid":"old_name","minecraftProfileUuid":"51cf1c94-674d-4b42-ba66-bc88ae843a62","skinUrl":"http://untrusted.invalid/portrait"}
             """));
     }
     @Test void crackedAndUnknownProfilesUseTheSuppliedWebsiteFallback(){
-        assertEquals(PortraitSource.FALLBACK,portrait("{\"accountType\":\"cracked\",\"minecraftProfileUuid\":\"51cf1c94674d4b42ba66bc88ae843a62\"}"));
-        assertEquals(PortraitSource.FALLBACK,portrait("{\"name\":\"Unknown\"}"));
-        assertEquals(PortraitSource.FALLBACK,portrait("{\"accountType\":\"paid\",\"linkedAccount\":{\"accountType\":\"cracked\"}}"));
+        assertEquals(meowmeow.FALLBACK,portrait("{\"accountType\":\"cracked\",\"minecraftProfileUuid\":\"51cf1c94674d4b42ba66bc88ae843a62\"}"));
+        assertEquals(meowmeow.FALLBACK,portrait("{\"name\":\"Unknown\"}"));
+        assertEquals(meowmeow.FALLBACK,portrait("{\"accountType\":\"paid\",\"linkedAccount\":{\"accountType\":\"cracked\"}}"));
     }
     @Test void imageSourcesCannotRedirectDownloadsToArbitraryHosts(){
-        assertTrue(PortraitSource.allowed(PortraitSource.FALLBACK));
-        assertFalse(PortraitSource.allowed("https://visage.surgeplay.com@other.invalid/image.png"));
-        assertFalse(PortraitSource.allowed("https://visage.surgeplay.com/bust/256/../../image.png"));
-        assertFalse(PortraitSource.allowed("file:///secret.png"));
+        assertTrue(meowmeow.allowed(meowmeow.FALLBACK));
+        assertFalse(meowmeow.allowed("https://visage.surgeplay.com@other.invalid/image.png"));
+        assertFalse(meowmeow.allowed("https://visage.surgeplay.com/bust/256/../../image.png"));
+        assertFalse(meowmeow.allowed("file:///secret.png"));
     }
     private List<PlayerInfo> players(){return PlayerInfo.parsePlayersJs("""
         {"players":[

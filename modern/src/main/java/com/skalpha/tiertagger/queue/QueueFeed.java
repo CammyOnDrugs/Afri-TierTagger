@@ -11,8 +11,7 @@ import java.util.Set;
 
                                                                                  
 public record QueueFeed(Instant generatedAt, List<Entry> queues) {
-    public static final Set<String> MODES = Set.of("sword", "vanilla", "axe", "diapot", "nethpot",
-            "uhc", "smp", "mace", "ogv", "speed", "diasmp", "creeper", "cart", "spear", "bed", "diavanilla");
+    public static final Set<String> MODES = Set.of("sword","axe","vanilla","uhc","diapot","nethpot","smp","mace","spear","diasmp","diavanilla","cart","speed","creeper","bed","ogv","rocketmace","holefight");
 
     public record Entry(String mode, boolean open, String eventId, Instant openedAt, URI joinUrl) {}
 

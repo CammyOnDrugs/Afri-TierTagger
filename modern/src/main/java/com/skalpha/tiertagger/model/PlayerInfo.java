@@ -34,7 +34,7 @@ public record PlayerInfo(
    boolean combatMaster,
    String portrait
 ) {
-   public PlayerInfo(String uuid,String name,Map<String,Ranking> rankings,String region,int points,int overall,List<Badge> badges,boolean combatMaster){this(uuid,name,rankings,region,points,overall,badges,combatMaster,PortraitSource.FALLBACK);}
+   public PlayerInfo(String uuid,String name,Map<String,Ranking> rankings,String region,int points,int overall,List<Badge> badges,boolean combatMaster){this(uuid,name,rankings,region,points,overall,badges,combatMaster,meowmeow.FALLBACK);}
    private static final SecureRandom RANDOM = new SecureRandom();
 
    public static CompletableFuture<List<PlayerInfo>> fetchAll(HttpClient client, String baseUrl) {
@@ -46,7 +46,7 @@ public record PlayerInfo(
          .header("Pragma", "no-cache")
          .GET()
          .build();
-      return client.sendAsync(request, com.skalpha.tiertagger.net.PublicHttp.limitedUtf8(8_000_000)).thenApply(response -> {
+      return client.sendAsync(request, com.skalpha.tiertagger.net.网络.limitedUtf8(8_000_000)).thenApply(response -> {
          if (response.statusCode() >= 200 && response.statusCode() < 300) {
             return response.body();
          } else {
@@ -79,7 +79,7 @@ public record PlayerInfo(
       for (int index = 0; index < players.size(); index++) {
          PlayerInfo player = players.get(index);
          int position = positions.getOrDefault(player, 0);
-         player.rankings().replaceAll((mode, previous) -> new Ranking(previous.tierName(), previous.tier(), previous.retired(), previous.points(), position));
+         player.rankings().replaceAll((mode, previous) -> new Ranking(previous.tierName(), previous.tier(), previous.retired(), previous.points(), position,previous.peakTier()));
          players.set(index, new PlayerInfo(player.uuid(), player.name(), player.rankings(), player.region(), player.points(), position, player.badges(), player.combatMaster(),player.portrait()));
       }
    }
@@ -99,12 +99,12 @@ public record PlayerInfo(
             boolean retired = getBoolean(tierObj, "retired", false);
             if (mode != null && !mode.isBlank() && !"debuff".equalsIgnoreCase(mode)) {
                GameMode canonical = GameMode.byId(mode);
-               rankings.put(canonical.id(), new PlayerInfo.Ranking(level, level, retired, getInt(tierObj, "points", 0)));
+               rankings.put(canonical.id(), new PlayerInfo.Ranking(level, level, retired, getInt(tierObj, "points", 0),0,validPeak(getString(tierObj,"peakTier"))));
             }
          }
       }
 
-      return new PlayerInfo(uuid, name, rankings, region, totalPoints, 0, Collections.emptyList(), false,PortraitSource.forPlayer(obj));
+      return new PlayerInfo(uuid, name, rankings, region, totalPoints, 0, Collections.emptyList(), false,meowmeow.forPlayer(obj));
    }
 
    public static Optional<PlayerInfo.NamedRanking> getHighestRanking(Map<String, PlayerInfo.Ranking> rankings) {
@@ -241,7 +241,9 @@ public record PlayerInfo(
       }
    }
 
-   public record Ranking(String tierName, String tier, boolean retired, int points, int position) {
+   private static String validPeak(String value){return value!=null&&value.matches("[HL]T[1-5]")?value:null;}
+   public record Ranking(String tierName, String tier, boolean retired, int points, int position,String peakTier) {
+      public Ranking(String tierName,String tier,boolean retired,int points,int position){this(tierName,tier,retired,points,position,null);}
       public Ranking(String tierName, String tier, boolean retired, int points) { this(tierName, tier, retired, points, 0); }
       public PlayerInfo.NamedRanking asNamed(@Nullable GameMode mode) {
          return new PlayerInfo.NamedRanking(mode, this);

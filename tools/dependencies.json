@@ -1,0 +1,52 @@
+[
+  {
+    "file": "ModMenu-1.21.11.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/cLkYaVuL/modmenu-17.0.1.jar",
+    "sha512": "cb68cc39c8da66d05a1d2054a0e7b62144881e0cdb5fd681bc4f337b1313fafac394246f4e0aa0c4b6343db9e9750250a00c1bb72689b762da685ce1ccfee51f"
+  },
+  {
+    "file": "ModMenu-26.1.1.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/ZJ6YTrMY/modmenu-18.0.2.jar",
+    "sha512": "37393e1d4a23a548463e92eb0687af69034ee7c308bd1d2d27d78df0292f124c4463f19d4b53128b59cda4e02d01d7ae09f06456d10abde19b6e450163e50e97"
+  },
+  {
+    "file": "ModMenu-26.1.2.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/ZJ6YTrMY/modmenu-18.0.2.jar",
+    "sha512": "37393e1d4a23a548463e92eb0687af69034ee7c308bd1d2d27d78df0292f124c4463f19d4b53128b59cda4e02d01d7ae09f06456d10abde19b6e450163e50e97"
+  },
+  {
+    "file": "ModMenu-26.1.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/ZJ6YTrMY/modmenu-18.0.2.jar",
+    "sha512": "37393e1d4a23a548463e92eb0687af69034ee7c308bd1d2d27d78df0292f124c4463f19d4b53128b59cda4e02d01d7ae09f06456d10abde19b6e450163e50e97"
+  },
+  {
+    "file": "ModMenu-26.2.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/iRo7AZXf/modmenu-20.0.3.jar",
+    "sha512": "c8224aa7a460d0c56ccb9978a112e4ad0d3eb17e2796e0c468a2392d220749f4f602838a11b3666145462c26078a879ab8a2fc177aa440f58e189c92a0088d6e"
+  },
+  {
+    "file": "ModMenu-26.3.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/xckkBHD5/modmenu-21.0.1.jar",
+    "sha512": "d00d52d5342728da13a6237f76c50fc5fd1c62d8112ae4e07726bbc64d2019a76130d6b2968765df81c6499225588eacee6681eebc13c0ada3cad91fc8ab2984"
+  },
+  {
+    "file": "WalksyLib-2.0.5+1.21.11.jar",
+    "url": "https://cdn.modrinth.com/data/7P86n6Vg/versions/exxN7KBX/WalksyLib-2.0.5%2B1.21.11.jar",
+    "sha512": "8da17e37eaa6e389b313af83ecd192318d4903d3ceb684f63d981099c4d77957fb9232ca8f8ca722d25b9283d94e6f5fd2d8f806905f23f8d64c70b27f701916"
+  },
+  {
+    "file": "WalksyLib-2.0.5+26.1-26.1.2.jar",
+    "url": "https://cdn.modrinth.com/data/7P86n6Vg/versions/cKgUEZ5V/WalksyLib-2.0.5%2B26.1-26.1.2.jar",
+    "sha512": "2720a72bed56b4d48e6b76f6b4c43ef3a2be418e5faee2dadafd4799d1002850cf197c68ac95c6cde1893ad550b0010856a962ddaf1480a0b631e33fffd79a86"
+  },
+  {
+    "file": "WalksyLib-2.0.5+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/7P86n6Vg/versions/7QXyIV4a/WalksyLib-2.0.5%2B26.2.jar",
+    "sha512": "68b9afac7505843625daffeb1969d563942b79df1ac2846dde3c8e006967e7182977426e16d878078c0eb6906f0e52f579e987887657c39f6e0a976ec83351b5"
+  },
+  {
+    "file": "WalksyLib-2.0.5+26.3.jar",
+    "url": "https://cdn.modrinth.com/data/7P86n6Vg/versions/xWphfskv/WalksyLib-2.0.5%2B26.3.jar",
+    "sha512": "b7b77dd6201b36c81280271ca2b64cec2ddba4ecfb7ec1987ee4b74a331dc07c4643e8f082bea7284ab93e78178e8d783b7f11fb08f95c7f62341f28c3fcee4e"
+  }
+]

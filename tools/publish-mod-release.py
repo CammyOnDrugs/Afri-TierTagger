@@ -11,9 +11,9 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSIONS = ['1.21.11', '26.1', '26.1.1', '26.1.2', '26.2', '26.3']
-BUILD_COMMIT = '630f783fe178623431259f20537c30a805f026c9'
-BUILD_RUN = 42284697642
-TAG = 'v2.8.4'
+BUILD_COMMIT = os.environ['BUILD_COMMIT']
+BUILD_RUN = int(os.environ['BUILD_RUN'])
+TAG = 'v2.8.6'
 
 
 def digest(path):
@@ -35,7 +35,7 @@ def prepare():
     out.mkdir(exist_ok=True)
     jars = []
     for version in VERSIONS:
-        name = f'Afri-TiersTagger-2.8.4+mc{version}.jar'
+        name = f'Afri-TiersTagger-2.8.6+mc{version}.jar'
         matches = list((ROOT / 'release-builds').rglob(name))
         if len(matches) != 1:
             raise RuntimeError(f'Expected exactly one tested client artifact: {name}')
@@ -43,7 +43,7 @@ def prepare():
         shutil.copyfile(matches[0], dest)
         with zipfile.ZipFile(dest) as jar:
             metadata = json.loads(jar.read('fabric.mod.json'))
-            if metadata['version'] != f'2.8.4+mc{version}':
+            if metadata['version'] != f'2.8.6+mc{version}':
                 raise RuntimeError('Wrong client version in ' + name)
             if jar.testzip() is not None:
                 raise RuntimeError('Corrupt client artifact: ' + name)
@@ -51,20 +51,20 @@ def prepare():
     common = ['RELEASE-NOTES.md', 'CHANGELOG.md', 'LICENSE', 'NOTICE', 'COPYRIGHT']
     for name in ['RELEASE-NOTES.md', 'CHANGELOG.md']:
         shutil.copyfile(ROOT / name, out / name)
-    with zipfile.ZipFile(out / 'AfriTiers-2.8.4-client-source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(out / 'AfriTiers-2.8.6-client-source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for path in paths:
             archive.write(ROOT / path, path)
-    with zipfile.ZipFile(out / 'AfriTiers-2.8.4-Minecraft-1.21.11-to-26.3.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(out / 'AfriTiers-2.8.6-Minecraft-1.21.11-to-26.3.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for path in jars:
             archive.write(path, path.name)
         for name in common:
             archive.write(ROOT / name, name)
     assets = jars + [out / name for name in [
-        'AfriTiers-2.8.4-client-source.zip',
-        'AfriTiers-2.8.4-Minecraft-1.21.11-to-26.3.zip', 'RELEASE-NOTES.md', 'CHANGELOG.md']]
+        'AfriTiers-2.8.6-client-source.zip',
+        'AfriTiers-2.8.6-Minecraft-1.21.11-to-26.3.zip', 'RELEASE-NOTES.md', 'CHANGELOG.md']]
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip()
     manifest = {
-        'version': '2.8.4', 'minecraftVersions': VERSIONS, 'sourceCommit': head,
+        'version': '2.8.6', 'minecraftVersions': VERSIONS, 'sourceCommit': head,
         'testedBuildCommit': BUILD_COMMIT, 'testedBuildRun': BUILD_RUN,
         'pluginsIncluded': False,
         'files': [{'file': path.name, 'sha256': digest(path), 'bytes': path.stat().st_size}
@@ -104,22 +104,12 @@ def publish(assets, head):
             raise
         release = request(f'{base}/releases', 'POST', {
             'tag_name': TAG, 'target_commitish': head,
-            'name': 'Afri-TiersTagger 2.8.4 | Minecraft 1.21.11 - 26.3',
+            'name': 'Afri-TiersTagger 2.8.6 | Minecraft 1.21.11 - 26.3',
             'body': body, 'draft': True, 'prerelease': False})
     existing = {entry['name']: entry for entry in request(release['assets_url'])}
     expected = {path.name for path in assets}
     if not release['draft']:
-        # Replace only the exact older 2.8.4 release inspected and backed up.
-        old_name = 'AfriTiers-2.8.4-Minecraft-1.21.11-to-26.3.zip'
-        if release['id'] != 436898507 or set(existing) != {old_name} or existing[old_name].get('digest') != 'sha256:ef68fc6d434d3ae957a053d8425fce1fca385f940cb7ed2919761778e63ecf59':
-            raise RuntimeError('Existing release changed since backup; inspect before replacing')
-        tag = request(base + '/git/ref/tags/' + TAG)
-        if tag['object']['sha'] != '1361ca323f6c6a76de6f2a0453c16334b4fb6754':
-            raise RuntimeError('Existing release tag changed since inspection')
-        request(base + '/git/refs/tags/' + TAG, 'PATCH', {'sha': head, 'force': True})
-        request(existing[old_name]['url'], 'DELETE')
-        existing = {}
-        release = request(release['url'], 'PATCH', {'target_commitish': head, 'body': body})
+        raise RuntimeError('Version 2.8.6 is already published; refusing to overwrite it')
     elif release['target_commitish'] != head:
         raise RuntimeError('Existing draft targets a different commit')
     if set(existing) - expected:

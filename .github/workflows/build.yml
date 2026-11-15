@@ -23,6 +23,8 @@ jobs:
           java-version: '${{ matrix.java }}'
       - uses: gradle/actions/setup-gradle@v4
       - run: chmod +x gradlew modern/gradlew
+      - name: Fetch pinned dependencies
+        run: python3 tools/fetch-dependencies.py
       - name: Build matching client
         run: |
           if [ '${{ matrix.minecraft }}' = '1.21.11' ]; then

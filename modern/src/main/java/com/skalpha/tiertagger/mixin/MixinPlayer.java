@@ -39,7 +39,7 @@ public class MixinPlayer {
    private boolean isEnabled() {
       long now = System.currentTimeMillis();
       if (now - lastConfigCheck > 5000L) {
-         configEnabled = ((TierTaggerConfig)TierTagger.getManager().getConfig()).isEnabled();
+         configEnabled = ((TierTaggerConfig)TierTagger.getManager().getConfig()).isEnabled() && TierTagger.getManager().getConfig().isNameTags();
          lastConfigCheck = now;
       }
 
